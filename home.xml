@@ -1228,7 +1228,7 @@
                         <a class='menu-link' href='https://blog.430309.xyz/p/friends.html'>🔗 友链</a>
                     </li>
                     <li class='menu-item'>
-                        <a class='menu-link' href='https://pl.430309.xyz/'>💬 留言板</a>
+                        <a class='menu-link' href='https://blog.430309.xyz/p/chatter.html'>💬 留言板</a>
                     </li>
                     <li class='menu-item'>
                         <a class='menu-link' href='https://blog.430309.xyz/p/bangumi-bgm.html'>📺 番组计划</a>
@@ -1988,7 +1988,7 @@
             <a href='https://blog.430309.xyz/p/friends.html' class='radial-item' style='--tx: 118.9px; --ty: -38.6px; --delay: 1;'>
                 <span>友链</span>
             </a>
-            <a href='https://pl.430309.xyz/' class='radial-item' style='--tx: 73.5px; --ty: 101.1px; --delay: 2;'>
+            <a href='https://blog.430309.xyz/p/chatter.html' class='radial-item' style='--tx: 73.5px; --ty: 101.1px; --delay: 2;'>
                 <span>留言板</span>
             </a>
             <a href='https://blog.430309.xyz/p/bangumi-bgm.html' class='radial-item' style='--tx: -73.5px; --ty: 101.1px; --delay: 3;'>

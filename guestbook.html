@@ -708,9 +708,58 @@
                             }, 500);
                         }
                     }
-                }
             });
         })();
+
+        // 自动初始化 Waline (兜底逻辑，防止首次载入时 DOMContentLoaded 先于 HTML 注入执行而导致评论框未唤醒)
+        setTimeout(function() {
+            if (!window.walineInstance && document.getElementById("waline-comments")) {
+                console.log("Waline was not initialized by theme, initializing manually...");
+                
+                // 加载 Waline CSS
+                if (!document.querySelector('link[href*="waline.css"]')) {
+                    const link = document.createElement("link");
+                    link.rel = "stylesheet";
+                    link.href = "https://fastly.jsdelivr.net/npm/@waline/client@2.15.8/dist/waline.css";
+                    document.head.appendChild(link);
+                }
+                
+                // 加载 Waline JS
+                if (typeof Waline === "undefined") {
+                    const script = document.createElement("script");
+                    script.src = "https://fastly.jsdelivr.net/npm/@waline/client@2.15.8/dist/waline.js";
+                    script.onload = function() {
+                        initWaline();
+                    };
+                    document.head.appendChild(script);
+                } else {
+                    initWaline();
+                }
+            }
+        }, 600);
+
+        function initWaline() {
+            const el = document.getElementById("waline-comments");
+            if (!el || window.walineInstance) return;
+            
+            const loadingStatus = document.getElementById("wl-loading-status");
+            if (loadingStatus) loadingStatus.remove();
+            
+            const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+            
+            if (typeof Waline !== "undefined" && Waline.init) {
+                window.walineInstance = Waline.init({
+                    el: "#waline-comments",
+                    serverURL: "https://pl.430309.xyz/",
+                    dark: isDark,
+                    pageview: true,
+                    comment: true,
+                    locale: {
+                        placeholder: "期待你的神评捏 "
+                    }
+                });
+            }
+        }
     })();
     //]]>
 </script>
