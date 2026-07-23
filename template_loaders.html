@@ -5,8 +5,39 @@
   (function () {
     const guestbookUrl = 'https://fastly.jsdelivr.net/gh/AmiyaAA/blog@master/guestbook_page.html';
     const cacheKey = 'blogger_guestbook_cache_v2';
+    
+    // 拦截 window 的 load 事件以阻止 home.xml 中的进度条（page-loader）过早淡出
+    const originalAddEventListener = window.addEventListener;
+    const loadListeners = [];
+    let isReleased = false;
 
+    window.addEventListener = function(type, listener, options) {
+      if (type === 'load') {
+        loadListeners.push({ listener, options });
+      } else {
+        originalAddEventListener.call(this, type, listener, options);
+      }
+    };
+
+    // 释放并执行被拦截的 load 事件，让进度条跑完并淡出
+    function releaseLoadEvent() {
+      if (isReleased) return;
+      isReleased = true;
+      window.addEventListener = originalAddEventListener;
+      loadListeners.forEach(item => {
+        originalAddEventListener.call(window, 'load', item.listener, item.options);
+      });
+      // 如果文档此时已加载完成，手动触发 load 事件以确保进度条淡出
+      if (document.readyState === 'complete') {
+        const event = new Event('load');
+        window.dispatchEvent(event);
+      }
+    }
+
+    let isRendered = false;
     function injectHtml(html) {
+      if (isRendered) return;
+      isRendered = true;
       const container = document.getElementById('guestbook-loader');
       container.innerHTML = html;
       const scripts = container.querySelectorAll('script');
@@ -19,32 +50,46 @@
     }
 
     const cachedHtml = localStorage.getItem(cacheKey);
-    if (cachedHtml) {
-      injectHtml(cachedHtml); // 立即渲染缓存
 
-      // 后台静默校验，发现有代码更新则自动重载
-      fetch(guestbookUrl)
-        .then(res => { if (res.ok) return res.text(); })
-        .then(html => {
-          if (html && html.trim() !== cachedHtml.trim()) {
-            localStorage.setItem(cacheKey, html);
-            location.reload(); // 发现新代码，自动刷新页面应用最新版！
+    // 超时降级：如果网络请求超过 1.5 秒未响应，自动渲染缓存并释放进度条
+    const timeoutTimer = setTimeout(function () {
+      if (cachedHtml) {
+        injectHtml(cachedHtml);
+      }
+      releaseLoadEvent();
+    }, 1500);
+
+    // 优先从网络拉取最新内容，确保在进度条遮罩层未关闭时就完成版本检测
+    fetch(guestbookUrl)
+      .then(res => {
+        if (!res.ok) throw new Error('网络异常');
+        return res.text();
+      })
+      .then(html => {
+        clearTimeout(timeoutTimer);
+        if (html) {
+          const isStale = !cachedHtml || html.trim() !== cachedHtml.trim();
+          localStorage.setItem(cacheKey, html); // 更新本地缓存
+          
+          if (isStale && cachedHtml) {
+            // 如果本地有老缓存且检测到了新版本更新：
+            // 直接在进度条遮罩下进行静默重载，用户看不到老旧界面，再次加载时即为新版
+            location.reload();
+          } else {
+            // 如果内容无变动，直接渲染最新内容并释放进度条
+            injectHtml(html);
+            releaseLoadEvent();
           }
-        })
-        .catch(() => { });
-    } else {
-      fetch(guestbookUrl)
-        .then(res => {
-          if (!res.ok) throw new Error('网络异常');
-          return res.text();
-        })
-        .then(html => {
-          injectHtml(html);
-          localStorage.setItem(cacheKey, html);
-        })
-        .catch(err => {
+        }
+      })
+      .catch(err => {
+        clearTimeout(timeoutTimer);
+        if (cachedHtml) {
+          injectHtml(cachedHtml);
+        } else {
           document.getElementById('guestbook-loader').innerHTML = '❌ 留言板载入失败：' + err;
-        });
-    }
+        }
+        releaseLoadEvent();
+      });
   })();
 </script>
