@@ -1,0 +1,50 @@
+<!-- 留言板装载容器 -->
+<div id="guestbook-loader">⚡ 正在载入留言板组件...</div>
+
+<script>
+  (function () {
+    const guestbookUrl = 'https://fastly.jsdelivr.net/gh/AmiyaAA/blog@master/guestbook_page.html';
+    const cacheKey = 'blogger_guestbook_cache_v2';
+
+    function injectHtml(html) {
+      const container = document.getElementById('guestbook-loader');
+      container.innerHTML = html;
+      const scripts = container.querySelectorAll('script');
+      scripts.forEach(oldScript => {
+        const newScript = document.createElement('script');
+        Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+        newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+        oldScript.parentNode.replaceChild(newScript, oldScript);
+      });
+    }
+
+    const cachedHtml = localStorage.getItem(cacheKey);
+    if (cachedHtml) {
+      injectHtml(cachedHtml); // 立即渲染缓存
+
+      // 后台静默校验，发现有代码更新则自动重载
+      fetch(guestbookUrl)
+        .then(res => { if (res.ok) return res.text(); })
+        .then(html => {
+          if (html && html.trim() !== cachedHtml.trim()) {
+            localStorage.setItem(cacheKey, html);
+            location.reload(); // 发现新代码，自动刷新页面应用最新版！
+          }
+        })
+        .catch(() => { });
+    } else {
+      fetch(guestbookUrl)
+        .then(res => {
+          if (!res.ok) throw new Error('网络异常');
+          return res.text();
+        })
+        .then(html => {
+          injectHtml(html);
+          localStorage.setItem(cacheKey, html);
+        })
+        .catch(err => {
+          document.getElementById('guestbook-loader').innerHTML = '❌ 留言板载入失败：' + err;
+        });
+    }
+  })();
+</script>
