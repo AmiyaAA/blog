@@ -1,0 +1,547 @@
+<!-- Changelog 容器开始 -->
+<style>
+    /* 更新日志页面专属命名空间，防样式冲突 */
+    .cl-page-container {
+        font-family: inherit;
+        color: var(--text-primary);
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 1rem 0;
+    }
+
+    .cl-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        margin-top: 1.5rem;
+    }
+
+    .cl-title {
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: var(--text-primary);
+        margin-bottom: 1rem;
+        letter-spacing: 2px;
+        position: relative;
+        display: inline-block;
+    }
+
+    .cl-title::after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 45px;
+        height: 4px;
+        background: var(--accent-color);
+        border-radius: var(--radius-pill);
+    }
+
+    .cl-subtitle {
+        font-size: 0.95rem;
+        color: var(--text-secondary);
+        font-style: italic;
+        margin: 0;
+    }
+
+    /* 已知 Bug 提示框 */
+    .cl-bug-banner {
+        background-color: var(--warning-bg);
+        border: 1px solid var(--warning-border);
+        color: var(--warning-text);
+        padding: 1rem 1.5rem;
+        border-radius: var(--radius-card);
+        font-size: 0.92rem;
+        margin-bottom: 2.5rem;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border-left: 5px solid var(--warning-border);
+        box-shadow: var(--card-shadow);
+    }
+
+    .cl-bug-icon {
+        font-size: 1.25rem;
+        flex-shrink: 0;
+    }
+
+    /* 时间轴整体容器 */
+    .cl-timeline {
+        position: relative;
+        padding-left: 0;
+        margin-top: 2rem;
+    }
+
+    /* 贯穿时间轴的竖线 */
+    .cl-timeline::before {
+        content: '';
+        position: absolute;
+        top: 20px;
+        /* 从第一个年份圆圈的中心位置开始，使其完美连上 */
+        bottom: 15px;
+        left: 110px;
+        /* 对齐圆点中心: 90px (label width) + 21px (half of 42px wrap) = 111px center line */
+        width: 0;
+        /* 采用虚线设计，更显轻量美观 */
+        border-left: 2px dashed var(--border-color);
+    }
+
+    /* 年份组标题 */
+    .cl-year-group {
+        display: flex;
+        align-items: center;
+        margin-bottom: 2rem;
+        position: relative;
+        z-index: 2;
+    }
+
+    .cl-year-label {
+        width: 90px;
+        font-size: 2.2rem;
+        font-weight: 850;
+        color: var(--text-primary);
+        line-height: 1;
+        text-align: right;
+        font-feature-settings: "tnum";
+        white-space: nowrap;
+        flex-shrink: 0;
+        /* 阻止弹性伸缩以对齐时间轴 */
+    }
+
+    .cl-year-circle-wrap {
+        width: 42px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-shrink: 0;
+    }
+
+    .cl-year-circle {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        border: 3px solid var(--accent-color);
+        background: var(--bg-primary);
+        box-shadow: 0 0 0 4px var(--label-bg);
+    }
+
+    .cl-year-summary {
+        font-size: 0.95rem;
+        color: var(--text-secondary);
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    /* 时间轴单条记录 */
+    .cl-timeline-item {
+        display: flex;
+        align-items: stretch;
+        position: relative;
+        padding: 0.5rem 0;
+        border-radius: var(--radius-item);
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        cursor: default;
+        margin-bottom: 0.3rem;
+    }
+
+    .cl-timeline-item:hover {
+        background-color: var(--label-bg);
+    }
+
+    /* 左侧日期 */
+    .cl-item-date {
+        width: 90px;
+        text-align: right;
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: var(--text-secondary);
+        padding-top: 6px;
+        flex-shrink: 0;
+        font-family: monospace, sans-serif;
+        transition: color 0.3s ease;
+    }
+
+    .cl-timeline-item:hover .cl-item-date {
+        color: var(--accent-color);
+    }
+
+    /* 中间轴线节点 */
+    .cl-item-node-wrap {
+        width: 42px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        flex-shrink: 0;
+    }
+
+    .cl-item-node {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: var(--text-secondary);
+        opacity: 0.6;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        z-index: 2;
+    }
+
+    /* 悬停时的“变线”高级动效 */
+    .cl-timeline-item:hover .cl-item-node {
+        width: 4px;
+        height: 100%;
+        border-radius: var(--radius-pill);
+        background-color: var(--accent-color);
+        opacity: 1;
+    }
+
+    /* 右侧日志详情内容 */
+    .cl-item-content {
+        flex: 1;
+        min-width: 0;
+        padding: 4px 1rem 4px 0;
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .cl-item-desc {
+        font-size: 0.95rem;
+        line-height: 1.5;
+        color: var(--text-primary);
+        font-weight: 500;
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .cl-timeline-item:hover .cl-item-desc {
+        transform: translateX(3px);
+    }
+
+    /* 胶囊标签样式 */
+    .cl-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2px 10px;
+        border-radius: var(--radius-tag);
+        font-size: 0.78rem;
+        font-weight: 700;
+        white-space: nowrap;
+        flex-shrink: 0;
+        margin-top: 1px;
+    }
+
+    /* 各种类型的配色系统 */
+    .cl-badge.badge-sys {
+        background-color: #fff0f3;
+        color: #ff527b;
+    }
+
+    [data-theme="dark"] .cl-badge.badge-sys {
+        background-color: rgba(255, 82, 123, 0.18);
+        color: #ff6e92;
+    }
+
+    .cl-badge.badge-feat {
+        background-color: #f3e8ff;
+        color: #6b21a8;
+    }
+
+    [data-theme="dark"] .cl-badge.badge-feat {
+        background-color: rgba(147, 51, 234, 0.18);
+        color: #c084fc;
+    }
+
+    .cl-badge.badge-opt {
+        background-color: #e0f2fe;
+        color: #0369a1;
+    }
+
+    [data-theme="dark"] .cl-badge.badge-opt {
+        background-color: rgba(14, 165, 233, 0.18);
+        color: #38bdf8;
+    }
+
+    .cl-badge.badge-fix {
+        background-color: #dcfce7;
+        color: #15803d;
+    }
+
+    [data-theme="dark"] .cl-badge.badge-fix {
+        background-color: rgba(34, 197, 94, 0.18);
+        color: #4ade80;
+    }
+
+    .cl-badge.badge-adjust {
+        background-color: #ffedd5;
+        color: #c2410c;
+    }
+
+    [data-theme="dark"] .cl-badge.badge-adjust {
+        background-color: rgba(249, 115, 22, 0.18);
+        color: #fb923c;
+    }
+
+    /* 移动端响应式排版自适应 */
+    @media (max-width: 576px) {
+        .cl-timeline::before {
+            left: 74px;
+            /* 55px (label width) + 19px (half of 38px wrap) = 74px center line */
+        }
+
+        .cl-year-label {
+            width: 55px;
+            font-size: 1.4rem;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .cl-year-circle-wrap {
+            width: 38px;
+        }
+
+        .cl-timeline-item {
+            padding: 0.6rem 0;
+        }
+
+        .cl-item-date {
+            width: 55px;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        .cl-item-node-wrap {
+            width: 38px;
+        }
+
+        .cl-item-content {
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .cl-badge {
+            padding: 1px 8px;
+            font-size: 0.72rem;
+        }
+
+        .cl-item-desc {
+            font-size: 0.9rem;
+            line-height: 1.45;
+            flex-basis: 100%;
+            margin-top: 4px;
+        }
+    }
+
+    /* 历史折叠面板 */
+    .cl-history-details {
+        margin-top: 1rem;
+        border-radius: var(--radius-card);
+        transition: background-color 0.3s ease;
+    }
+
+    .cl-history-details summary {
+        list-style: none;
+        outline: none;
+        cursor: pointer;
+        display: block;
+    }
+
+    .cl-history-details summary::-webkit-details-marker {
+        display: none;
+    }
+
+    .cl-history-details summary:focus {
+        outline: none;
+    }
+
+    .cl-toggle-arrow {
+        font-size: 0.75rem;
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s ease;
+        display: inline-block;
+        margin-left: 8px;
+        color: var(--text-secondary);
+        transform: rotate(-90deg);
+        /* 默认折叠指向右侧 */
+    }
+
+    .cl-history-details[open] .cl-toggle-arrow {
+        transform: rotate(0deg);
+        /* 展开向下 */
+        color: var(--accent-color);
+    }
+
+    .cl-history-details summary:hover .cl-year-label {
+        color: var(--accent-color);
+    }
+
+    .cl-history-details summary:hover .cl-year-circle {
+        border-color: var(--accent-color);
+        transform: scale(1.1);
+    }
+
+    /* 展开过渡动画 */
+    @keyframes clFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-8px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .cl-history-content {
+        animation: clFadeIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    /* 简易 timeline 项，在 JS 加载前隐藏以防闪烁 */
+    .cl-item {
+        display: none;
+    }
+</style>
+
+<div class="cl-page-container">
+    <div class="cl-header">
+        <h1 class="cl-title">更新日志</h1>
+        <p class="cl-subtitle">“积土成山，积水成渊，记录每一处改变。”</p>
+    </div>
+
+    <!-- 已知 Bug 告示栏 -->
+    <div class="cl-bug-banner">
+        <span class="cl-bug-icon">🐛</span>
+        <div>
+            <strong>已知 Bug：</strong> 暂无Bug公示，期待你的反馈捏(*^▽^*)。
+        </div>
+    </div>
+
+    <!-- 时间轴组件 -->
+    <div class="cl-timeline">
+
+        <!-- 2026 折叠区域 -->
+        <details class="cl-history-details" open>
+            <summary>
+                <div class="cl-year-group">
+                    <div class="cl-year-label">2026</div>
+                    <div class="cl-year-circle-wrap">
+                        <div class="cl-year-circle"></div>
+                    </div>
+                    <div class="cl-year-summary">
+                        <span>📅</span> <span class="cl-update-count">0</span> 次更新记录 <span
+                            class="cl-toggle-arrow">▼</span>
+                    </div>
+                </div>
+            </summary>
+            <div class="cl-history-content">
+                <div class="cl-item" data-date="07-23" data-tags="系统">将评论数据库由LeanCloud迁移至Neno。</div>
+                <div class="cl-item" data-date="07-10" data-tags="修复 优化">更换头像 CDN，修复了本站头像在其他博客上无法正常显示的
+                    Bug。修复友链页面移动端界面撕裂的 Bug。优化更新历史页面</div>
+                <div class="cl-item" data-date="07-09" data-tags="修复 优化">修复查看更新历史小组件，进行大量优化。</div>
+                <div class="cl-item" data-date="07-08" data-tags="友链">与 Hsu Yeung 成为朋友。</div>
+                <div class="cl-item" data-date="01-01" data-tags="计划">Blog重启计划，基于谷歌服务Blogger修改，发力中...</div>
+
+            </div>
+        </details>
+
+        <!-- 历史日志折叠区域 -->
+        <details class="cl-history-details">
+            <summary>
+                <div class="cl-year-group">
+                    <div class="cl-year-label">2021</div>
+                    <div class="cl-year-circle-wrap">
+                        <div class="cl-year-circle"></div>
+                    </div>
+                    <div class="cl-year-summary">
+                        <span>📅</span> <span class="cl-update-count">0</span> 次历史日志记录 <span
+                            class="cl-toggle-arrow">▼</span>
+                    </div>
+                </div>
+            </summary>
+            <div class="cl-history-content">
+                <div class="cl-item" data-date="10-23" data-tags="系统 优化">重装服务器系统，由 CentOS 换为
+                    Debian，更改服务器部分设置，使用网页访问加速服务，删减部分代码，修复部分已知问题。</div>
+                <div class="cl-item" data-date="10-02" data-tags="功能">增加了网页樱花特效与网页共享协议。</div>
+                <div class="cl-item" data-date="10-01" data-tags="优化">压缩了字体体积，大幅提升网页加载速度，并更新了网页图标。</div>
+                <div class="cl-item" data-date="09-30" data-tags="系统 修复">更换了服务器，并修复了 CSS 阴影效果在部分浏览器下不显示的 Bug。</div>
+                <div class="cl-item" data-date="09-25" data-tags="修复">修复了英文自定义字体不显示、提示栏上下漂浮等 Bug；修复了 Amiya 页面背景图不显示的
+                    Bug，暂时移除了看板娘。</div>
+                <div class="cl-item" data-date="09-24" data-tags="修复">修复了关于页面不显示背景这一长期存在的 Bug，更新了更新日志 (手动滑稽)。</div>
+                <div class="cl-item" data-date="09-22" data-tags="调整">调整并优化了部分页面内容。</div>
+                <div class="cl-item" data-date="09-21" data-tags="调整">调整并微调了部分页面内容。</div>
+                <div class="cl-item" data-date="09-20" data-tags="功能">
+                    新增了诸多功能；主页添加看板娘；添加了多种字体；但同时新增了诸多“Bug”，可能会导致手机浏览器崩溃。</div>
+                <div class="cl-item" data-date="09-11" data-tags="功能">删除了日语五十音图页面，新增了看板娘；停止了对日语、英语及繁体中文的翻译支持。</div>
+                <div class="cl-item" data-date="09-10" data-tags="优化">所有页面支持英语、日语、简繁体中文展示；重新设计并优化了页脚的排版布局。</div>
+                <div class="cl-item" data-date="09-06" data-tags="优化">部分页面完成英语适配，后续计划适配日语；更新了 401 页面并优化了代码（部分页面已支持日语）。
+                </div>
+                <div class="cl-item" data-date="09-05" data-tags="功能">新增了主页的导航栏，删除了原有的音乐播放器，并进行了相关的代码优化。</div>
+                <div class="cl-item" data-date="09-02" data-tags="优化">新增了诸多页面内容，并进行了深入的代码优化。</div>
+                <div class="cl-item" data-date="09-01" data-tags="功能">新增了日语五十音图页面、Amiya 主题页面及 401 页面，并优化了相关的底层代码。</div>
+                <div class="cl-item" data-date="08-31" data-tags="调整">调整了更新日志的导航链接，并新增了部分 CSS 动效。</div>
+                <div class="cl-item" data-date="08-27" data-tags="优化">对项目整体代码结构进行了深入的精简和优化。</div>
+                <div class="cl-item" data-date="08-22" data-tags="功能">更新了网站用户协议至 Ver 1.1，并正式新增了网站日志页面。</div>
+                <div class="cl-item" data-date="08-21" data-tags="调整">调整并精雕细琢了关于页面的 CSS 样式设计。</div>
+                <div class="cl-item" data-date="08-18" data-tags="功能">新增了网站用户协议页面以及“关于我”主介绍页面。</div>
+                <div class="cl-item" data-date="08-17" data-tags="优化">优化了快捷跳转至 QQ 联系人链接的重定向机制，并微调了 CSS 布局高度。</div>
+                <div class="cl-item" data-date="08-16" data-tags="功能">网站搭建初期基础功能上线！新增了 404
+                    页面、网站图标（Favicon）、联系站长入口及更新日志；完成了对手机浏览器的基础适配并优化代码。</div>
+        </details>
+
+    </div>
+</div>
+
+<script>
+    (function () {
+        const badgeClasses = {
+            '系统': 'badge-sys',
+            '计划': 'badge-sys',
+            '功能': 'badge-feat',
+            '优化': 'badge-opt',
+            '修复': 'badge-fix',
+            '调整': 'badge-adjust',
+            '友链': 'badge-adjust'
+        };
+
+        // 自动计算各折叠组内的日志条数
+        document.querySelectorAll('.cl-history-details').forEach(function (details) {
+            const count = details.querySelectorAll('.cl-item').length;
+            const countSpan = details.querySelector('.cl-update-count');
+            if (countSpan) {
+                countSpan.textContent = count;
+            }
+        });
+
+        // 转换简化的 cl-item
+        document.querySelectorAll('.cl-item').forEach(function (item) {
+            const date = item.getAttribute('data-date') || '';
+            const tagsStr = item.getAttribute('data-tags') || '';
+            const tags = tagsStr.split(/\s+/).filter(Boolean);
+            const descHtml = item.innerHTML;
+
+            let badgesHtml = '';
+            tags.forEach(function (tag) {
+                const cls = badgeClasses[tag] || 'badge-adjust';
+                badgesHtml += `<span class="cl-badge ${cls}">${tag}</span>`;
+            });
+
+            const timelineItem = document.createElement('div');
+            timelineItem.className = 'cl-timeline-item';
+            timelineItem.innerHTML = `
+                <div class="cl-item-date">${date}</div>
+                <div class="cl-item-node-wrap">
+                    <div class="cl-item-node"></div>
+                </div>
+                <div class="cl-item-content">
+                    ${badgesHtml}
+                    <div class="cl-item-desc">${descHtml}</div>
+                </div>
+            `;
+            item.replaceWith(timelineItem);
+        });
+    })();
+</script>
+<!-- Changelog 容器结束 -->

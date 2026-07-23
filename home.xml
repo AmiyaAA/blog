@@ -1,0 +1,2110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html b:css='false' b:js='false' b:defaultwidgetversion='2' b:layoutsversion='3' expr:dir='data:blog.languageDirection' expr:lang='data:blog.locale' xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/2005/gml/b' xmlns:data='http://www.google.com/2005/gml/data' xmlns:expr='http://www.google.com/2005/gml/expr'>
+<head>
+    <link as='image' href='https://cdn.430309.xyz/iloli.gif' rel='preload' fetchpriority='high'/>
+	<script data-website-id='e370abef-ca7c-4f67-953a-db65c56fb666' defer='defer' src='https://cloud.umami.is/script.js'/>
+    <meta content='width=device-width, initial-scale=1' name='viewport'/>
+    <b:if cond='data:blog.metaDescription'>
+      <meta expr:content='data:blog.metaDescription' name='description'/>
+    </b:if>
+    <title><data:blog.pageTitle/></title>
+    <link expr:href='data:blog.url' rel='canonical'/>
+    <link expr:href='data:blog.homepageUrl + "feeds/posts/default"' rel='alternate' title='RSS' type='application/rss+xml'/>
+    
+    <b:skin><![CDATA[
+    /*
+    Theme Name: Minimal Dark Mode Theme (Three-Column Layout Upgrade)
+    Author: Gemini AI
+    Version: 8.6.2 (Fixed Mobile Logo Truncation Issue)
+    */
+    
+    :root {
+        --bg-primary: #ffffff;
+        --bg-secondary: #f7f9fa;
+        --text-primary: #1a1a1a;
+        --text-secondary: #65676b;
+        --accent-color: #ff527b;
+        --border-color: #eaeaea;
+        --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        --menu-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        --toggle-bg: #e4e6eb;
+        --search-bg: #eaeaea;
+        --label-bg: #fff0f3;
+        --label-text: #ff527b;
+        --overlay-bg: rgba(0, 0, 0, 0.4);
+        --contact-bg: #fff0f3;
+        --warning-bg: #fff9db;
+        --warning-border: #ffe066;
+        --warning-text: #856404;
+        
+        /* Unified border-radius values */
+        --radius-card: 16px;
+        --radius-item: 10px;
+        --radius-tag: 12px;
+        --radius-btn: 6px;
+        --radius-pill: 20px;
+        
+        --nav-bg: rgba(247, 249, 250, 0.85);
+    }
+
+    @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) {
+            --bg-primary: #121212;
+            --bg-secondary: #1e1e1e;
+            --text-primary: #f5f6f7;
+            --text-secondary: #909399;
+            --accent-color: #ff6e92;
+            --border-color: #2c2c2c;
+            --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            --menu-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            --toggle-bg: #3a3b3c;
+            --search-bg: #2a2a2a;
+            --label-bg: rgba(255, 82, 123, 0.15);
+            --label-text: #ff6e92;
+            --overlay-bg: rgba(0, 0, 0, 0.7);
+            --contact-bg: rgba(255, 82, 123, 0.15);
+            --warning-bg: #2d2812;
+            --warning-border: #665200;
+            --warning-text: #e6c343;
+            
+            --nav-bg: rgba(30, 30, 30, 0.85);
+        }
+    }
+
+    :root[data-theme="dark"] {
+        --bg-primary: #121212;
+        --bg-secondary: #1e1e1e;
+        --text-primary: #f5f6f7;
+        --text-secondary: #909399;
+        --accent-color: #ff6e92;
+        --border-color: #2c2c2c;
+        --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        --menu-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        --toggle-bg: #3a3b3c;
+        --search-bg: #2a2a2a;
+        --label-bg: rgba(255, 82, 123, 0.15);
+        --label-text: #ff6e92;
+        --overlay-bg: rgba(0, 0, 0, 0.7);
+        --contact-bg: rgba(255, 82, 123, 0.15);
+        --warning-bg: #2d2812;
+        --warning-border: #665200;
+        --warning-text: #e6c343;
+        
+        --nav-bg: rgba(30, 30, 30, 0.85);
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background-color: var(--bg-primary); color: var(--text-primary); line-height: 1.6;
+        transition: background-color 0.2s ease, color 0.2s ease;
+    }
+    
+    header, footer, .sidebar-widget, .post-card, .search-input, .theme-toggle, .menu-toggle, .pager-btn, .sidebar-label-item, .label-item, a, .hitokoto-container, .countdown-widget, #waline-comments {
+        transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    a { color: var(--accent-color); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    header { background-color: var(--nav-bg); border-bottom: 1px solid var(--border-color);
+        padding: 0.8rem 0; position: sticky; top: 0; z-index: 100;
+        backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+    .nav-container { max-width: 1400px; margin: 0 auto; padding: 0 1rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; position: relative; }
+    
+    /* 标志与导航菜单左侧对齐区 */
+    .nav-left { display: flex; align-items: center; gap: 2rem; }
+    .logo { display: flex; align-items: center; gap: 8px; }
+    .logo-icon { font-size: 1.4rem; line-height: 1; }
+    .logo a { font-size: 1.4rem; font-weight: 700; color: var(--text-primary); white-space: nowrap; }
+    
+    /* 横向导航菜单 - 桌面端居中对齐 */
+    .nav-menu { 
+        position: absolute; 
+        left: 50%; 
+        transform: translateX(-50%); 
+        display: flex; 
+        align-items: center; 
+        gap: 0.5rem; 
+        list-style: none; 
+    }
+    .menu-item { position: relative; padding: 0.4rem 0.6rem; }
+    .menu-link { display: flex; align-items: center; gap: 6px; font-size: 0.95rem; font-weight: 500; color: var(--text-primary); padding: 6px 12px; border-radius: var(--radius-btn); transition: background 0.2s ease; }
+    .menu-link:hover { background: var(--bg-primary); color: var(--accent-color); text-decoration: none; }
+    .menu-link .arrow { font-size: 0.7rem; color: var(--text-secondary); transition: transform 0.2s ease; }
+    .menu-item:hover .menu-link .arrow { transform: rotate(180deg); color: var(--accent-color); }
+
+    /* 悬停展开下拉列表 */
+    .dropdown-list { position: absolute; top: 100%; left: 50%; transform: translateX(-50%); background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-item); box-shadow: var(--menu-shadow); list-style: none; min-width: 150px; padding: 0.5rem 0; display: none; z-index: 110; margin-top: 2px; }
+    .dropdown-list::before { content: ''; position: absolute; bottom: 100%; left: 0; right: 0; height: 8px; } /* 消除悬停空隙 */
+    .dropdown-list li a { display: block; padding: 0.5rem 1.2rem; font-size: 0.9rem; color: var(--text-primary); white-space: nowrap; transition: all 0.2s ease; }
+    .dropdown-list li a:hover { background: var(--label-bg); color: var(--accent-color); text-decoration: none; padding-left: 1.5rem; }
+    .menu-item:hover .dropdown-list { display: block; animation: navFadeIn 0.2s ease forwards; }
+
+    @keyframes navFadeIn {
+        from { opacity: 0; transform: translateX(-50%) translateY(4px); }
+        to { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+    
+    .nav-controls { display: flex; align-items: center; gap: 0.6rem; flex-grow: 1; justify-content: flex-end; }
+    
+    .search-form { display: flex; align-items: center; position: relative; }
+    .search-input { background-color: var(--search-bg); border: 1px solid var(--border-color); color: var(--text-primary); padding: 8px 12px; padding-left: 32px; border-radius: var(--radius-pill); font-size: 0.85rem; width: 214px; transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease; }
+    .search-input:focus { outline: none; border-color: var(--accent-color); }
+    .search-icon { position: absolute; left: 12px; color: var(--text-secondary); font-size: 0.8rem; pointer-events: none; display: flex; align-items: center; justify-content: center; }
+    
+    /* 隐藏移动端专属按钮（默认桌面端不显示） */
+    .mobile-search-btn { display: none; background: var(--toggle-bg); border: none; width: 36px; height: 36px; border-radius: 50%; color: var(--text-primary); cursor: pointer; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+
+    .theme-toggle, .menu-toggle { 
+        background: var(--toggle-bg); border: none; width: 36px; height: 36px; border-radius: 50%; color: var(--text-primary); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; white-space: nowrap; flex-shrink: 0;
+    }
+    .menu-toggle { display: none; }
+
+    /* 【升级为三栏布局：左边栏 260px，右边栏 260px，中间自适应】 */
+    .main-container { max-width: 1400px; margin: 2rem auto; padding: 0 1rem; display: flex; gap: 1.5rem; align-items: flex-start; }
+    .main-content { flex: 1; min-width: 0; }
+    
+    .sidebar { width: 260px; display: flex; flex-direction: column; gap: 1.5rem; position: sticky; top: 5.5rem; z-index: 90; }
+    .sidebar-widget { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-card); padding: 1.2rem; box-shadow: var(--card-shadow); }
+    .sidebar-widget h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.8rem; padding-bottom: 0.4rem; border-bottom: 2px solid var(--border-color); color: var(--text-primary); }
+    
+    /* 侧边栏小部件之间的间距（解决 Blogger 自动包裹 widget 容器导致 gap 失效的问题） */
+    .sidebar .widget {
+        margin-bottom: 1.5rem;
+    }
+    .sidebar .widget:last-child {
+        margin-bottom: 0;
+    }
+    
+    .countdown-widget { text-align: center; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-card); padding: 1.2rem; box-shadow: var(--card-shadow); }
+    .countdown-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.8rem; padding-bottom: 0.4rem; border-bottom: 2px solid var(--border-color); color: var(--text-primary); text-align: left; }
+    .countdown-event { font-size: 0.95rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.6rem; }
+    .countdown-timer { display: flex; justify-content: center; align-items: baseline; gap: 4px; margin: 0.8rem 0; }
+    .countdown-large-num { font-size: 3.2rem; font-weight: 850; color: var(--accent-color); line-height: 1; letter-spacing: -1px; }
+    .countdown-large-unit { font-size: 1.1rem; font-weight: 700; color: var(--text-secondary); }
+    .countdown-target-date { font-size: 0.78rem; color: var(--text-secondary); margin-top: 0.6rem; }
+
+    .author-card { text-align: center; }
+    
+    .author-avatar-link {
+        display: block;
+        width: 100%;
+        text-decoration: none !important;
+        margin-bottom: 1.2rem;
+    }
+    .author-avatar-wrap {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        border-radius: var(--radius-card);
+        overflow: hidden;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+    .author-avatar-img {
+        display: block;
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+        transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        border-radius: 0 !important;
+        border: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    .author-avatar-link:hover .author-avatar-img {
+        transform: scale(1.04) !important;
+    }
+    
+    .author-card-name { font-size: 1.3rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.3rem; text-align: center; }
+    .author-line { width: 24px; height: 3px; background: #ff527b; margin: 0.5rem auto 0.8rem auto; border-radius: var(--radius-pill); }
+    .author-card-bio { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; text-align: center; margin-bottom: 1rem; }
+    .author-card-bio p { margin-bottom: 0.4rem; }
+    .author-card-bio p:last-child { margin-bottom: 0; }
+    
+    .author-social-links {
+        display: flex;
+        gap: 0.6rem;
+        justify-content: center;
+        margin-top: 1rem;
+    }
+    .author-social-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: #fff0f3;
+        color: #ff527b;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        text-decoration: none !important;
+    }
+    [data-theme="dark"] .author-social-btn {
+        background: rgba(255, 82, 123, 0.15);
+        color: #ff6e92;
+    }
+    .author-social-btn:hover {
+        background: #ff527b;
+        color: #ffffff;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(255, 82, 123, 0.25);
+    }
+    
+    .post-outdate-warning {
+        display: none; background-color: var(--warning-bg); border: 1px solid var(--warning-border); color: var(--warning-text); padding: 0.8rem 1rem; border-radius: var(--radius-item); font-size: 0.9rem; margin-top: 0.8rem; margin-bottom: 0.5rem; text-align: left; border-left: 4px solid var(--warning-border);
+    }
+    
+    .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--overlay-bg); z-index: 199; opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
+    .sidebar-overlay.active { opacity: 1; pointer-events: auto; }
+
+    .archive-list { list-style: none; padding-left: 0; }
+    .archive-list li { margin-bottom: 0.5rem; font-size: 0.95rem; display: flex; justify-content: space-between; }
+    .archive-list a { color: var(--text-primary); }
+    .archive-list a:hover { color: var(--accent-color); }
+    .archive-count { color: var(--text-secondary); font-size: 0.85rem; }
+
+    .sidebar-labels { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .sidebar-label-item { background-color: var(--label-bg); color: var(--label-text); padding: 4px 10px; border-radius: var(--radius-tag); font-size: 0.8rem; font-weight: 500; }
+    .sidebar-label-item:hover { opacity: 0.8; text-decoration: none; }
+    
+    .no-results-card { background: var(--bg-secondary); border: 1px dashed var(--border-color); border-radius: var(--radius-card); padding: 4rem 2rem; text-align: center; margin-bottom: 1.5rem; box-shadow: var(--card-shadow); }
+    .no-results-icon { font-size: 3rem; margin-bottom: 1rem; display: block; }
+    .no-results-text { color: var(--text-primary); font-size: 1.2rem; font-weight: 600; margin-bottom: 0.5rem; }
+    .no-results-sub { color: var(--text-secondary); font-size: 0.95rem; }
+    
+    .post-card { background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-card); padding: 1.8rem; box-shadow: var(--card-shadow); margin-bottom: 1.5rem; word-wrap: break-word; word-break: break-word; overflow-wrap: break-word; display: flow-root; }
+    .post-card-title { display: none; }
+    .post-title { font-size: 1.6rem; margin-bottom: 0.4rem; font-weight: 700; line-height: 1.3; }
+    .post-title a { color: var(--text-primary); }
+    
+    .post-meta { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.2rem; display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+    .meta-separator { color: var(--border-color); font-size: 0.85rem; user-select: none; }
+    .post-labels { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+    .label-item { background-color: var(--label-bg); color: var(--label-text); padding: 2px 10px; border-radius: var(--radius-tag); font-size: 0.8rem; font-weight: 500; }
+    
+    .post-body { color: var(--text-primary); font-size: 1.05rem; display: flow-root; }
+    .post-body img { max-width: 100%; height: auto; border-radius: var(--radius-item); margin: 1rem 0; }
+    
+    .post-snippet { color: var(--text-secondary); font-size: 1rem; line-height: 1.7; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; white-space: pre-wrap; }
+    .more-link { display: inline-block; margin-top: 1rem; font-size: 0.95rem; font-weight: 500; color: var(--accent-color); }
+    
+    .blog-pager-container { display: flex; justify-content: center; align-items: center; gap: 1.2rem; margin: 2.5rem 0 1rem; width: 100%; }
+    .pager-btn { display: inline-block; background-color: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color); padding: 0.6rem 1.8rem; border-radius: var(--radius-pill); font-size: 0.95rem; font-weight: 500; box-shadow: var(--card-shadow); cursor: pointer; text-align: center; transition: all 0.2s ease; }
+    .pager-btn:hover { background-color: var(--accent-color); color: #ffffff; border-color: var(--accent-color); text-decoration: none; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 70, 243, 0.2); }
+    .pager-btn:active { transform: translateY(0); }
+
+    .hitokoto-container {
+        margin-top: 1.5rem; padding: 1.2rem 1.5rem; border-radius: var(--radius-card); border: 1px solid var(--border-color); background: var(--bg-secondary); box-shadow: var(--card-shadow); display: flex; flex-direction: column; gap: 0.5rem;
+    }
+    .hitokoto-text { font-size: 0.95rem; color: var(--text-primary); font-style: italic; position: relative; line-height: 1.5; }
+    .hitokoto-from { font-size: 0.82rem; color: var(--text-secondary); text-align: right; font-weight: 500; }
+
+    footer { text-align: center; padding: 2.5rem 1rem; color: var(--text-secondary); font-size: 0.88rem; border-top: 1px solid var(--border-color); margin-top: 4rem; line-height: 1.8; }
+    .footer-primary-info { margin-bottom: 0.6rem; }
+    .footer-cc-license { font-size: 0.78rem; opacity: 0.85; }
+    footer a { font-weight: 500; transition: color 0.15s ease; }
+
+    .back-to-top {
+        position: fixed !important; bottom: 2.5rem !important; right: 2.5rem !important; width: 46px !important; height: 46px !important; background-color: var(--accent-color) !important; color: #ffffff !important; border: none !important; border-radius: 50% !important; cursor: pointer !important; display: flex !important; align-items: center !important; justify-content: center !important; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18) !important; z-index: 99999 !important; opacity: 0 !important; visibility: hidden !important; transform: translateY(10px); transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease, background-color 0.2s ease !important;
+    }
+    .back-to-top.show { opacity: 1 !important; visibility: visible !important; transform: translateY(0) !important; }
+    .back-to-top:hover { transform: translateY(-4px) !important; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.24) !important; filter: brightness(1.1); }
+    .back-to-top:active { transform: translateY(-1px) !important; }
+    .back-to-top svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+    #waline-comments {
+        --wl-theme-color: var(--accent-color) !important;
+        --wl-bg-color: var(--bg-secondary) !important;
+        --wl-text-color: var(--text-primary) !important;
+        --wl-border-color: var(--border-color) !important;
+        min-height: 120px; position: relative;
+        display: flow-root;
+    }
+
+    /* 移动端与平板媒体查询调整 */
+    @media (max-width: 992px) {
+        .nav-menu { display: none; } /* 移动端暂时隐藏顶栏横向菜单，防止挤压布局 */
+        .main-container { flex-direction: column; margin: 1rem auto; padding: 0 0.6rem; }
+        .sidebar { width: 100%; position: static; }
+        .left-sidebar { display: none !important; } /* 移动端下隐藏左侧边栏，因为移动端抽屉栏中已包含其内容 */
+        .menu-toggle { display: flex; }
+        
+        /* 保持原本右侧边栏作为抽屉的逻辑 */
+        #blogSidebar {
+            position: fixed; top: 0; right: -300px; width: 280px; height: 100vh; background: var(--bg-primary); padding: 1.5rem 1.2rem; box-shadow: -4px 0 20px rgba(0,0,0,0.15); transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1); overflow-y: auto; z-index: 200; gap: 1.5rem;
+        }
+        #blogSidebar.active { right: 0; }
+        .sidebar-overlay { display: block; }
+        body.sidebar-open { overflow: hidden; }
+        .main-content {
+            width: 100%;
+            max-width: 100%;
+        }
+    }
+
+    @media (max-width: 768px) {
+        header { padding: 0.8rem 1rem; }
+        .nav-container { gap: 0.4rem; }
+        
+        /* 移动端核心修改：去掉图标，不限宽度，绝不打省略号 */
+        .logo-icon { display: none; }
+        .logo a { 
+            font-size: 1.15rem; 
+            max-width: none; 
+            overflow: visible; 
+            text-overflow: clip; 
+            white-space: nowrap; 
+        }
+        
+        .nav-controls { gap: 0.4rem; }
+        
+        /* 移动端核心：搜索框基础重置与隐藏 */
+        .search-form {
+            display: none; position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); background: var(--bg-secondary); padding: 0 0.5rem; z-index: 10; animation: searchFadeIn 0.2s ease forwards;
+        }
+        .search-form.active { display: flex; }
+        .search-input { width: 100% !important; padding: 8px 12px 8px 32px; font-size: 0.9rem; }
+        .search-icon { left: 16px; }
+        
+        /* 移动端开启搜索按钮 */
+        .mobile-search-btn { display: flex; }
+        
+        @keyframes searchFadeIn {
+            from { opacity: 0; transform: translateY(-50%) scale(0.95); }
+            to { opacity: 1; transform: translateY(-50%) scale(1); }
+        }
+        
+        .post-card { padding: 1.2rem 1rem; margin-bottom: 1rem; border-radius: var(--radius-card); }
+        .post-title { font-size: 1.35rem; margin-bottom: 0.5rem; }
+        .post-meta { gap: 0.6rem; margin-bottom: 0.8rem; font-size: 0.8rem; }
+        .post-snippet { font-size: 0.92rem; line-height: 1.6; }
+        
+        footer { font-size: 0.82rem; padding: 2rem 1rem; line-height: 1.6; }
+        .back-to-top { bottom: 1.8rem !important; right: 1.8rem !important; width: 42px !important; height: 42px !important; }
+        .back-to-top svg { width: 18px; height: 18px; }
+        
+        /* 移动端预览图排版：图片排在上方，宽度撑满 */
+        .post-card-body {
+            flex-direction: column-reverse;
+            align-items: stretch;
+            gap: 1.2rem;
+        }
+        
+        .post-thumbnail-wrap {
+            width: 100%;
+            height: 170px;
+        }
+    }
+
+    /* ==========================================
+       Premium & Subtle Interactive Animations 
+       ========================================== */
+
+    /* 1. Scroll Progress Bar */
+    #scrollProgressBar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 3px;
+        background: var(--accent-color);
+        width: 0%;
+        z-index: 9999;
+        transition: width 0.12s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* 2. Logo Sparkle Hover Effect */
+    .logo-icon {
+        display: inline-block;
+        transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .logo:hover .logo-icon {
+        transform: scale(1.2) rotate(15deg);
+    }
+
+    /* 3. Navigation Links Subtle Shift */
+    .menu-link {
+        transition: background-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                    color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .menu-link:hover {
+        transform: translateY(-1.5px);
+    }
+    .menu-link:active {
+        transform: translateY(0);
+    }
+
+    /* 4. Theme Toggle Smooth Rotation */
+    .theme-toggle {
+        transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                    background-color 0.2s ease, 
+                    color 0.2s ease;
+    }
+    .theme-toggle:hover {
+        transform: scale(1.1) rotate(45deg);
+    }
+    .theme-toggle:active {
+        transform: scale(0.95);
+    }
+    .theme-toggle.clicked {
+        animation: spinToggle 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes spinToggle {
+        0% { transform: scale(1.1) rotate(45deg); }
+        100% { transform: scale(1) rotate(405deg); }
+    }
+
+    /* 5. Card Lift & Glow hover animation */
+    .post-card, .sidebar-widget, .countdown-widget, .hitokoto-container, #waline-comments {
+        transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+                    box-shadow 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+                    border-color 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+                    background-color 0.2s ease,
+                    color 0.2s ease !important;
+    }
+    
+    .post-card:hover, .sidebar-widget:hover, .countdown-widget:hover, .hitokoto-container:hover, #waline-comments:hover {
+        transform: translateY(-4px);
+        border-color: var(--accent-color);
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.05), 0 2px 8px rgba(255, 82, 123, 0.08);
+    }
+    
+    [data-theme="dark"] .post-card:hover,
+    [data-theme="dark"] .sidebar-widget:hover,
+    [data-theme="dark"] .countdown-widget:hover,
+    [data-theme="dark"] .hitokoto-container:hover,
+    [data-theme="dark"] #waline-comments:hover {
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35), 0 2px 8px rgba(255, 110, 146, 0.15);
+    }
+
+    /* 6. Author Avatar Zoom */
+    .author-avatar-wrap {
+        overflow: hidden;
+        border-radius: var(--radius-card);
+    }
+    .author-avatar-img {
+        transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .author-card:hover .author-avatar-img {
+        transform: scale(1.08);
+    }
+
+    /* 7. Scroll Reveal entry animation */
+    .reveal-item {
+        opacity: 0;
+        transform: translateY(18px);
+        transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal-item.revealed {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* 8. Notice Card Subtle Border Pulse (Elegant warning notice attention grabber) */
+    @keyframes noticeBorderPulse {
+        0% { border-color: var(--border-color); }
+        50% { border-color: rgba(255, 82, 123, 0.4); }
+        100% { border-color: var(--border-color); }
+    }
+    [data-theme="dark"] .notice-card {
+        animation: noticeBorderPulseDark 4s infinite ease-in-out;
+    }
+    .notice-card {
+        animation: noticeBorderPulse 4s infinite ease-in-out;
+    }
+    @keyframes noticeBorderPulseDark {
+        0% { border-color: var(--border-color); }
+        50% { border-color: rgba(255, 110, 146, 0.4); }
+        100% { border-color: var(--border-color); }
+    }
+
+    /* 9. Post Card Layout with Preview Image */
+    .post-card-body {
+        display: flex;
+        gap: 1.8rem;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+    
+    .post-card-content {
+        flex: 1;
+        min-width: 0;
+    }
+    
+    .post-thumbnail-wrap {
+        width: 220px;
+        height: 130px;
+        flex-shrink: 0;
+        overflow: hidden;
+        border-radius: var(--radius-item);
+        border: 1px solid var(--border-color);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    .post-thumbnail-img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    .post-thumbnail-wrap:hover {
+        transform: translateY(-3px);
+        border-color: var(--accent-color);
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+    }
+    
+    .post-thumbnail-wrap:hover .post-thumbnail-img {
+        transform: scale(1.06);
+    }
+    
+    /* ==========================================
+       Page Loader Mask (首屏资源加载全屏遮罩)
+       ========================================== */
+    .page-loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: var(--bg-primary);
+        z-index: 999999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 1;
+        visibility: visible;
+        transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .page-loader.fade-out {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+    }
+    .loader-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.2rem;
+        text-align: center;
+    }
+    .loader-gif {
+        width: 120px;
+        height: auto;
+        border-radius: var(--radius-item);
+    }
+    .loader-title {
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: var(--text-primary);
+        letter-spacing: 2px;
+        animation: loaderPulse 2s infinite ease-in-out;
+        user-select: none;
+    }
+    .loader-bar-container {
+        width: 220px;
+        height: 6px;
+        background-color: var(--border-color);
+        border-radius: var(--radius-pill);
+        overflow: hidden;
+        position: relative;
+    }
+    .loader-progress-bar {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, #ff527b, #ff8da6);
+        border-radius: var(--radius-pill);
+        transition: width 0.25s cubic-bezier(0.1, 0.8, 0.3, 1);
+    }
+
+    /* ==========================================
+       Artistic Theme Transition Mask (月之暗/亮面)
+       ========================================== */
+    .theme-transition-mask {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 999998;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+        pointer-events: none;
+    }
+    .theme-transition-mask.active {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+    }
+    .theme-transition-mask.to-dark {
+        background-color: #121212;
+        color: #ffffff;
+    }
+    .theme-transition-mask.to-light {
+        background-color: #ffffff;
+        color: #1a1a1a;
+    }
+    .theme-transition-text {
+        font-size: 3rem;
+        font-weight: 800;
+        letter-spacing: 8px;
+        user-select: none;
+        transform: scale(0.9) translateY(15px);
+        opacity: 0;
+        transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease;
+    }
+    .theme-transition-mask.active .theme-transition-text {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+
+    .mobile-only-widget {
+        display: none;
+    }
+    @media (max-width: 992px) {
+        .mobile-only-widget {
+            display: block !important;
+        }
+        .post-card.scroll-active {
+            transform: translateY(-4px) scale(1.01) !important;
+            border-color: var(--accent-color) !important;
+            box-shadow: 0 8px 24px rgba(255, 82, 123, 0.2), 0 0 0 2px rgba(255, 82, 123, 0.15) !important;
+        }
+    }
+        /* 更新日志按钮小工具 */
+    .changelog-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        padding: 10px 16px;
+        background-color: var(--accent-color);
+        color: #ffffff !important;
+        border-radius: var(--radius-pill);
+        font-weight: 700;
+        font-size: 0.92rem;
+        border: none;
+        box-shadow: 0 4px 12px rgba(255, 82, 123, 0.2);
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        text-decoration: none !important;
+        cursor: pointer;
+    }
+    .changelog-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(255, 82, 123, 0.35);
+        filter: brightness(1.05);
+    }
+    .changelog-btn:active {
+        transform: translateY(0);
+        box-shadow: 0 3px 8px rgba(255, 82, 123, 0.2);
+    }
+    [data-theme="dark"] .changelog-btn {
+        box-shadow: 0 4px 12px rgba(255, 110, 146, 0.2);
+    }
+    [data-theme="dark"] .changelog-btn:hover {
+        box-shadow: 0 6px 16px rgba(255, 110, 146, 0.35);
+    }
+
+    /* ==========================================================================
+       Responsive & Adaptive Adjustments for Custom Pages (Global)
+       ========================================================================== */
+
+    /* About Me Page (about.html) Responsive Style Override */
+    .post-card:has(.ab-container),
+    .post-body:has(.ab-container),
+    .post:has(.ab-container) {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        margin-top: 0 !important;
+    }
+
+    @media (max-width: 768px) {
+        .ab-profile-card {
+            padding: 3rem 1.2rem 2.5rem;
+        }
+        .ab-avatar-wrapper {
+            width: 100%;
+            height: auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        .ab-avatar-wrapper::before {
+            content: "";
+            width: 100%;
+            height: 0;
+            order: 0;
+        }
+        .ab-tag {
+            order: 1;
+            position: relative !important;
+            top: auto !important;
+            left: auto !important;
+            right: auto !important;
+            bottom: auto !important;
+            padding: 5px 11px;
+            font-size: 0.72rem;
+            animation: none !important;
+            margin: 0 !important;
+        }
+        .ab-avatar-box {
+            width: 140px;
+            height: 140px;
+            order: -1;
+            margin-bottom: 0.8rem;
+            flex-basis: auto;
+            display: block;
+        }
+        .ab-status-dot {
+            bottom: 8px !important;
+            right: 8px !important;
+        }
+        .ab-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+        .ab-card {
+            padding: 1.8rem;
+        }
+        .ab-card-title {
+            font-size: 1.8rem;
+        }
+        .ab-quote-content .q-row {
+            font-size: 1.35rem;
+        }
+        .ab-quote-content .highlight-slider {
+            font-size: 1.8rem;
+            height: 2.4rem;
+            line-height: 2.4rem;
+        }
+        .ab-quote-content .slide-item {
+            height: 2.4rem;
+            line-height: 2.4rem;
+        }
+        .ab-banner-card {
+            height: auto;
+            min-height: 220px;
+            padding: 1.8rem;
+            gap: 1.2rem;
+        }
+        .ab-banner-title {
+            font-size: 1.5rem;
+        }
+    }
+
+    /* Friends Page (friends_page.html) Responsive Style Override */
+    @media (max-width: 768px) {
+        .friends-page-container {
+            padding: 1rem 1rem;
+        }
+        .friends-header {
+            margin-bottom: 2rem;
+            margin-top: 1rem;
+        }
+        .friends-title {
+            font-size: 1.8rem;
+        }
+        .friends-grid {
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 1rem;
+        }
+        .friend-apply-card {
+            padding: 1.2rem;
+            margin-top: 2.5rem;
+        }
+        .friend-copy-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        .friend-copy-item {
+            padding: 0.8rem 1rem;
+        }
+        .friend-copy-val {
+            font-size: 0.8rem;
+            padding-right: 1.5rem;
+        }
+    }
+    @media (max-width: 480px) {
+        .friends-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* Changelog Page (changelog_page.html) Responsive Style Override */
+    @media (max-width: 576px) {
+        .cl-item-content {
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 6px;
+            align-items: center;
+        }
+        .cl-item-desc {
+            font-size: 0.9rem;
+            line-height: 1.45;
+            flex-basis: 100%;
+            margin-top: 4px;
+        }
+    }
+
+    /* ==========================================================================
+       User Agreement Page (user_agreement.html) Styles (Global)
+       ========================================================================== */
+    .ua-page-container {
+        font-family: inherit;
+        color: var(--text-primary);
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 1rem 0;
+    }
+
+    .ua-header {
+        text-align: center;
+        margin-bottom: 3.5rem;
+        margin-top: 1.5rem;
+    }
+
+    .ua-title {
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: var(--text-primary);
+        margin-bottom: 1rem;
+        letter-spacing: 2px;
+        position: relative;
+        display: inline-block;
+    }
+
+    .ua-title::after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 45px;
+        height: 4px;
+        background: var(--accent-color);
+        border-radius: var(--radius-pill);
+    }
+
+    .ua-subtitle {
+        font-size: 1rem;
+        color: var(--text-secondary);
+        font-weight: 600;
+        margin-top: 0.5rem;
+    }
+
+    .ua-meta-info {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        margin-top: 0.5rem;
+        font-style: italic;
+    }
+
+    .ua-section {
+        margin-bottom: 2.5rem;
+    }
+
+    .ua-section:last-child {
+        margin-bottom: 0;
+    }
+
+    .ua-section-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 1.2rem;
+        padding-left: 10px;
+        border-left: 4px solid var(--accent-color);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .ua-text {
+        font-size: 0.98rem;
+        line-height: 1.8;
+        color: var(--text-primary);
+        margin-bottom: 1rem;
+        text-align: justify;
+    }
+
+    .ua-list {
+        list-style: none;
+        padding-left: 0;
+        margin-bottom: 1rem;
+    }
+
+    .ua-list li {
+        position: relative;
+        padding-left: 1.5rem;
+        margin-bottom: 0.8rem;
+        font-size: 0.98rem;
+        line-height: 1.8;
+        color: var(--text-primary);
+        text-align: justify;
+    }
+
+    .ua-list li::before {
+        content: "\2726";
+        position: absolute;
+        left: 0;
+        color: var(--accent-color);
+        font-weight: bold;
+    }
+
+    .ua-footer {
+        margin-top: 4rem;
+        text-align: center;
+        font-size: 0.88rem;
+        color: var(--text-secondary);
+        border-top: 1px solid var(--border-color);
+        padding-top: 2rem;
+        line-height: 1.8;
+    }
+
+    /* 移动端自适应适配 */
+    @media (max-width: 768px) {
+        .ua-page-container {
+            padding: 1rem 0.5rem;
+        }
+
+        .ua-header {
+            margin-bottom: 2.5rem;
+            margin-top: 1rem;
+        }
+
+        .ua-title {
+            font-size: 1.8rem;
+        }
+
+        .ua-section-title {
+            font-size: 1.15rem;
+            margin-bottom: 1rem;
+        }
+
+        .ua-text, .ua-list li {
+            font-size: 0.92rem;
+            line-height: 1.7;
+        }
+    }
+
+    /* ==========================================================================
+       Mobile Radial Navigation Styles (Premium Circular Menu)
+       ========================================================================== */
+    .mobile-nav-floating-btn {
+        display: none;
+        position: fixed;
+        right: 0;
+        top: 60%;
+        transform: translateY(-50%);
+        width: 44px;
+        height: 48px;
+        border-radius: 24px 0 0 24px;
+        background-color: var(--label-bg);
+        color: var(--accent-color);
+        border: 1px solid var(--border-color);
+        border-right: none;
+        outline: none;
+        cursor: pointer;
+        align-items: center;
+        justify-content: center;
+        padding-right: 4px;
+        box-shadow: -2px 4px 12px rgba(0, 0, 0, 0.08);
+        z-index: 9999;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
+    }
+    
+    .mobile-nav-floating-btn:active {
+        transform: translateY(-50%) scale(0.92);
+    }
+    
+    .mobile-nav-floating-btn svg {
+        transition: transform 0.4s ease;
+    }
+    
+    .mobile-nav-floating-btn:hover svg {
+        transform: rotate(30deg);
+    }
+
+    .radial-nav-overlay {
+        position: fixed;
+        inset: 0;
+        background-color: rgba(0, 0, 0, 0.55);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        z-index: 100000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.35s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.35s;
+    }
+    
+    .radial-nav-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    .radial-menu-container {
+        position: relative;
+        width: 320px;
+        height: 320px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .radial-menu-bg {
+        position: absolute;
+        width: 260px;
+        height: 260px;
+        border-radius: 50%;
+        background: rgba(245, 245, 247, 0.72);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), inset 0 0 10px rgba(255, 255, 255, 0.3);
+        transform: scale(0.82);
+        opacity: 0;
+        transition: transform 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.2), opacity 0.4s ease;
+        z-index: 1;
+    }
+    
+    [data-theme="dark"] .radial-menu-bg {
+        background: rgba(28, 28, 30, 0.78);
+        border-color: rgba(255, 255, 255, 0.08);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.32), inset 0 0 10px rgba(255, 255, 255, 0.02);
+    }
+    
+    .radial-nav-overlay.active .radial-menu-bg {
+        transform: scale(1);
+        opacity: 1;
+    }
+    
+    .radial-center-btn {
+        position: absolute;
+        z-index: 10;
+        width: 50px;
+        height: 50px;
+        background-color: var(--accent-color);
+        border-radius: 50%;
+        border: 3.5px solid #ffffff;
+        color: #ffffff;
+        box-shadow: 0 0 0 6px var(--label-bg), 0 4px 12px rgba(0, 0, 0, 0.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        padding: 0;
+        outline: none;
+        transform: scale(0.8) rotate(0deg);
+        transition: transform 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    
+    .radial-nav-overlay.active .radial-center-btn {
+        transform: scale(1) rotate(90deg);
+    }
+    
+    .radial-center-btn:active {
+        transform: scale(0.92) rotate(90deg) !important;
+    }
+    
+    .radial-item {
+        position: absolute;
+        z-index: 5;
+        width: 54px;
+        height: 54px;
+        border-radius: 50%;
+        background-color: #ffffff;
+        color: #2c2c2e;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-decoration: none !important;
+        transform: translate(0, 0) scale(0);
+        opacity: 0;
+    }
+    
+    .radial-item span {
+        display: block;
+        width: 100%;
+        line-height: 1.2;
+        padding: 0 4px;
+        white-space: normal;
+        word-break: break-all;
+    }
+    
+    /* Open transition: cascade delay from 0 to 8 */
+    .radial-nav-overlay.active .radial-item {
+        transform: translate(var(--tx), var(--ty)) scale(1);
+        opacity: 1;
+        transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease, background-color 0.2s, color 0.2s, box-shadow 0.2s;
+        transition-delay: calc(var(--delay) * 0.035s);
+    }
+    
+    /* Close transition: cascade delay in reverse, from 4 to 0 */
+    .radial-nav-overlay:not(.active) .radial-item {
+        transform: translate(0, 0) scale(0);
+        opacity: 0;
+        transition: transform 0.4s cubic-bezier(0.6, -0.28, 0.735, 0.045), opacity 0.3s ease;
+        transition-delay: calc((4 - var(--delay)) * 0.035s);
+    }
+    
+    .radial-item:active {
+        transform: translate(var(--tx), var(--ty)) scale(0.92) !important;
+    }
+    
+    .radial-item.active {
+        background-color: var(--accent-color);
+        color: #ffffff;
+    }
+
+    @media (max-width: 992px) {
+        .mobile-nav-floating-btn {
+            display: flex;
+        }
+    }
+    ]]></b:skin>
+&lt;!--</head>--&gt;&lt;/head&gt;
+
+<body>
+    <!-- 网页首屏全装载遮罩进度条 -->
+    <div class='page-loader' id='page-loader'>
+        <div class='loader-content'>
+            <img alt='Loading...' class='loader-gif' fetchpriority='high' src='https://cdn.430309.xyz/iloli.gif'/>
+            <div class='loader-title'>AmiyaAA&#39;s Blog</div>
+            <div class='loader-bar-container'>
+                <div class='loader-progress-bar' id='loader-progress-bar'/>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主题切换艺术过场遮罩 -->
+    <div class='theme-transition-mask' id='theme-transition-mask'>
+        <div class='theme-transition-text' id='theme-transition-text'>月之暗面</div>
+    </div>
+
+    <div id='scrollProgressBar'/>
+    <div class='sidebar-overlay' id='sidebarOverlay'/>
+
+    <header>
+        <div class='nav-container' id='navContainer'>
+            <div class='nav-left'>
+                <div class='logo'>
+                    <span class='logo-icon'>&#10024;</span>
+                    <a expr:href='data:blog.homepageUrl'><data:blog.title/></a>
+                </div>
+                
+                <ul class='nav-menu'>
+                    <li class='menu-item'>
+                        <a class='menu-link' expr:href='data:blog.homepageUrl'>🏠 主页</a>
+                    </li>
+                    <li class='menu-item'>
+                        <a class='menu-link' href='https://blog.430309.xyz/p/friends.html'>🔗 友链</a>
+                    </li>
+                    <li class='menu-item'>
+                        <a class='menu-link' href='https://pl.430309.xyz/'>💬 留言板</a>
+                    </li>
+                    <li class='menu-item'>
+                        <a class='menu-link' href='https://blog.430309.xyz/p/bangumi-bgm.html'>📺 番组计划</a>
+                    </li>
+                    <li class='menu-item'>
+                        <a class='menu-link' href='https://blog.430309.xyz/p/about-me.html'>👤 关于我</a>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class='nav-controls'>
+                <form class='search-form' expr:action='data:blog.searchUrl' id='searchForm' method='get'>
+                    <span class='search-icon'>🔍</span>
+                    <input autocomplete='off' class='search-input' expr:value='data:view.search.query ?: &quot;&quot;' id='searchInput' name='q' placeholder='搜索...' type='text'/>
+                </form>
+                
+                <button aria-label='Open Search' class='mobile-search-btn' id='mobileSearchToggle'>🔍</button>
+                
+                <button aria-label='Toggle Theme' class='theme-toggle' id='themeToggle'>🌓</button>
+                <button aria-label='Open Sidebar' class='menu-toggle' id='menuToggle'>&#9776;</button>
+            </div>
+        </div>
+    </header>
+
+    <div class='main-container'>
+        <aside class='sidebar left-sidebar' id='leftSidebar'>
+            <div class='sidebar-widget author-card'>
+                <a class='author-avatar-link' href='https://blog.430309.xyz/p/about-me.html'>
+                    <div class='author-avatar-wrap'>
+                        <img alt='AmiyaAA' class='author-avatar-img' fetchpriority='high' src='https://cdn.430309.xyz/avatar.jpg'/>
+                    </div>
+                </a>
+                <div class='author-card-name'>AmiyaAA</div>
+                <div class='author-line'/>
+                <div class='author-card-bio'>
+                    Hello, I&#39;m AmiyaAA.
+                </div>
+                <div class='author-social-links'>
+                    <a class='author-social-btn' href='tencent://message/?uin=2551195327' title='QQ/消息联系'>
+                        <svg fill='currentColor' height='20' viewBox='0 0 24 24' width='20'><path d='M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 11H7V9h2v2zm4 0h-2V9h2v2zm4 0h-2V9h2v2z'/></svg>
+                    </a>
+                    <a class='author-social-btn' href='https://github.com/AmiyaAA' target='_blank' title='GitHub'>
+                        <svg fill='currentColor' height='18' viewBox='0 0 24 24' width='18'><path d='M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.464-1.11-1.464-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.579.688.481C19.137 20.162 22 16.418 22 12c0-5.523-4.477-10-10-10z'/></svg>
+                    </a>
+                    <a class='author-social-btn' href='mailto:amiyaaa.moe@icloud.com' title='Email'>
+                        <svg fill='currentColor' height='18' viewBox='0 0 24 24' width='18'><path d='M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z'/></svg>
+                    </a>
+                    <a class='author-social-btn' href='/feeds/posts/default' target='_blank' title='RSS'>
+                        <svg fill='currentColor' height='18' viewBox='0 0 24 24' width='18'><path d='M4 19.125a1.875 1.875 0 113.75 0 1.875 1.875 0 01-3.75 0zM4 3v3a15 15 0 0115 15h3A18 18 0 004 3zm0 7v3a8 8 0 018 8h3a11 11 0 00-11-11z'/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class='sidebar-widget notice-card'>
+                <h2>📢 网站公告</h2>
+                <div class='notice-content' style='font-size: 0.9rem; color: var(--text-primary); line-height: 1.5; white-space: pre-wrap;'>网站施工中...</div>
+            </div>
+
+            <!-- 倒数日 (电脑端专用展示，包含 cd-* 独立类以便 JS 双实例更新) -->
+            <div class='countdown-widget'>
+                <div class='countdown-title'>⏳ 倒数日</div>
+                <div class='countdown-event' id='countdown-event-title'>距离重要日子还有</div>
+                <div class='countdown-timer'>
+                    <span class='countdown-large-num cd-days' id='cd-days'>00</span>
+                    <span class='countdown-large-unit'>天</span>
+                </div>
+                <div class='countdown-target-date' id='countdown-target-text'>目标日期: --</div>
+            </div>
+            
+        </aside>
+
+        <main class='main-content'>
+            <b:section id='main' showaddelement='yes'>
+              <b:widget id='Blog1' locked='true' title='博文' type='Blog' version='2' visible='true'>
+                <b:widget-settings>
+                  <b:widget-setting name='showDateHeader'>false</b:widget-setting>
+                  <b:widget-setting name='style.textcolor'>#ffffff</b:widget-setting>
+                  <b:widget-setting name='showShareButtons'>true</b:widget-setting>
+                  <b:widget-setting name='showCommentLink'>true</b:widget-setting>
+                  <b:widget-setting name='style.urlcolor'>#ffffff</b:widget-setting>
+                  <b:widget-setting name='showAuthor'>false</b:widget-setting>
+                  <b:widget-setting name='style.linkcolor'>#ffffff</b:widget-setting>
+                  <b:widget-setting name='style.unittype'>TextAndImage</b:widget-setting>
+                  <b:widget-setting name='style.bgcolor'>#ffffff</b:widget-setting>
+                  <b:widget-setting name='timestampLabel'>-</b:widget-setting>
+                  <b:widget-setting name='reactionsLabel'/>
+                  <b:widget-setting name='showAuthorProfile'>false</b:widget-setting>
+                  <b:widget-setting name='style.layout'>1x1</b:widget-setting>
+                  <b:widget-setting name='showLabels'>true</b:widget-setting>
+                  <b:widget-setting name='showLocation'>true</b:widget-setting>
+                  <b:widget-setting name='postLabelsLabel'/>
+                  <b:widget-setting name='showTimestamp'>true</b:widget-setting>
+                  <b:widget-setting name='postsPerAd'>1</b:widget-setting>
+                  <b:widget-setting name='showBacklinks'>false</b:widget-setting>
+                  <b:widget-setting name='style.bordercolor'>#ffffff</b:widget-setting>
+                  <b:widget-setting name='showInlineAds'>false</b:widget-setting>
+                  <b:widget-setting name='showReactions'>false</b:widget-setting>
+                </b:widget-settings>
+                <b:includable id='main' var='top'>
+                        <b:if cond='data:posts and data:posts.notEmpty'>
+                            <b:loop index='postIndex' values='data:posts' var='post'>
+                                <article class='post-card'>
+                                    <b:if cond='!data:view.isSingleItem'>
+                                        <!-- 列表视图&#65306;带右侧预览图的弹性布局 -->
+                                        <div class='post-card-body'>
+                                            <div class='post-card-content'>
+                                                <h2 class='post-title'>
+                                                    <a expr:href='data:post.url'><data:post.title/></a>
+                                                </h2>
+                                                <div class='post-meta'>
+                                                    <span class='post-publish-date' expr:data-date='data:post.date.iso8601'>📅 <data:post.date/></span>
+                                                    
+                                                    <span class='post-read-stats' style='display: none;'>
+                                                        <span class='meta-separator'>|</span>
+                                                        📝 <span class='word-count-num'>0</span> 字
+                                                        <span class='meta-separator'>|</span>
+                                                        &#9201; <span class='read-time-num'>1</span> 分钟
+                                                    </span>
+                                                    <div class='post-html-source' expr:data-html='data:post.body' style='display: none;'/>
+
+                                                    <b:if cond='data:post.labels'>
+                                                        <span class='meta-separator'>|</span>
+                                                        <div class='post-labels'>
+                                                            <span>🏷&#65039;</span>
+                                                            <b:loop values='data:post.labels' var='label'>
+                                                                <a class='label-item' expr:href='data:label.url'><data:label.name/></a>
+                                                            </b:loop>
+                                                        </div>
+                                                    </b:if>
+                                                </div>
+                                                <div class='post-snippet'>
+                                                    <b:eval expr='data:post.body snippet { length: 300, links: false, linebreaks: true, ellipsis: true }'/>
+                                                </div>
+                                                <a class='more-link' expr:href='data:post.url'>阅读全文 &#10132;</a>
+                                            </div>
+                                            
+                                            <!-- 右侧博文预览图&#65288;有图时直接从 HTML 输出以优化 LCP ；无图/空时输出隐藏容器供 JS 提取兜底&#65289; -->
+                                            <b:if cond='data:post.thumbnailUrl'>
+                                                <a class='post-thumbnail-wrap' expr:href='data:post.url' style='display: block;'>
+                                                    <b:if cond='data:postIndex == 0'>
+                                                        <img alt='Preview' class='post-thumbnail-img' fetchpriority='high' expr:src='resizeImage(data:post.thumbnailUrl, 400)'/>
+                                                    <b:else/>
+                                                        <img alt='Preview' class='post-thumbnail-img' loading='lazy' expr:src='resizeImage(data:post.thumbnailUrl, 400)'/>
+                                                    </b:if>
+                                                </a>
+                                            <b:else/>
+                                                <a class='post-thumbnail-wrap' expr:href='data:post.url' style='display: none;'>
+                                                    <b:if cond='data:postIndex == 0'>
+                                                        <img alt='Preview' class='post-thumbnail-img' fetchpriority='high'/>
+                                                    <b:else/>
+                                                        <img alt='Preview' class='post-thumbnail-img' loading='lazy'/>
+                                                    </b:if>
+                                                </a>
+                                            </b:if>
+                                        </div>
+                                    <b:else/>
+                                        <!-- 单文章视图&#65306;全宽无预览图包装 -->
+                                        <b:if cond='!data:view.isPage'>
+                                            <h2 class='post-title'>
+                                                <a expr:href='data:post.url'><data:post.title/></a>
+                                            </h2>
+                                        </b:if>
+                                        <b:if cond='!data:view.isPage'>
+                                            <div class='post-meta'>
+                                                <span class='post-publish-date' expr:data-date='data:post.date.iso8601'>📅 <data:post.date/></span>
+                                                
+                                                <span class='post-read-stats' style='display: none;'>
+                                                    <span class='meta-separator'>|</span>
+                                                    📝 <span class='word-count-num'>0</span> 字
+                                                    <span class='meta-separator'>|</span>
+                                                    &#9201; <span class='read-time-num'>1</span> 分钟
+                                                </span>
+                                                <div class='post-html-source' expr:data-html='data:post.body' style='display: none;'/>
+
+                                                <b:if cond='data:post.labels'>
+                                                    <span class='meta-separator'>|</span>
+                                                    <div class='post-labels'>
+                                                        <span>🏷&#65039;</span>
+                                                        <b:loop values='data:post.labels' var='label'>
+                                                            <a class='label-item' expr:href='data:label.url'><data:label.name/></a>
+                                                        </b:loop>
+                                                    </div>
+                                                </b:if>
+                                            </div>
+                                        <b:else/>
+                                            <div class='post-html-source' expr:data-html='data:post.body' style='display: none;'/>
+                                        </b:if>
+                                        
+                                        <div class='post-outdate-warning' id='outdateWarning'>
+                                            &#9203; 最后更新于 <strong id='outdateDays'>0</strong> 天前&#65292;文章所描述的信息可能发生改变或是过时&#65292;请注意辨别&#12290;
+                                        </div>
+                                        
+                                        <div class='post-body'><data:post.body/></div>
+                                    </b:if>
+                                </article>
+
+                                <b:if cond='data:view.isSingleItem'>
+                                    <!-- 评论区 -->
+                                    <div id='waline-comments' style='margin-top: 1.5rem; padding: 1.5rem; border-radius: var(--radius-card); border: 1px solid var(--border-color); background: var(--bg-secondary); box-shadow: var(--card-shadow);'>
+                                        <div id='wl-loading-status' style='text-align:center;color:var(--text-secondary);font-size:0.9rem;padding:1.5rem 0;'>评论系统正在链接中捏...</div>
+                                    </div>
+
+                                    <!-- 一言 -->
+                                    <div class='hitokoto-container' id='hitokoto-box' style='margin-top: 1.5rem;'>
+                                        <div class='hitokoto-text' id='hitokoto-text'>正在捕捉一言中捏...</div>
+                                        <div class='hitokoto-from' id='hitokoto-from'/>
+                                    </div>
+                                </b:if>
+                            </b:loop>
+
+                            <div class='blog-pager-container' id='blog-pager'>
+                                <b:if cond='data:view.isSingleItem'>
+                                    <a class='pager-btn' expr:href='data:blog.homepageUrl'>🏠 查看所有博文</a>
+                                </b:if>
+                                <b:if cond='!data:view.isSingleItem'>
+                                    <b:if cond='data:view.isSearch or data:view.isArchive'>
+                                        <a class='pager-btn' expr:href='data:blog.homepageUrl'>🏠 返回首页</a>
+                                    </b:if>
+                                    <b:if cond='!(data:view.isSearch or data:view.isArchive)'>
+                                        <b:if cond='data:newerPageUrl and !data:view.isHomepage'>
+                                            <a class='pager-btn' expr:href='data:newerPageUrl'>&#11013;&#65039; 上一页</a>
+                                        </b:if>
+                                        <b:if cond='data:olderPageUrl'>
+                                            <a class='pager-btn' expr:href='data:olderPageUrl'>下一页 &#10132;</a>
+                                        </b:if>
+                                    </b:if>
+                                </b:if>
+                            </div>
+
+                        <b:else/>
+                            <div class='no-results-card'>
+                                <span class='no-results-icon'>📭</span>
+                                <div class='no-results-text'>没有找到相关文章哦</div>
+                                <div class='no-results-sub'>换个关键词再试一次&#65292;或者看看侧边栏的分类吧&#65281;</div>
+                            </div>
+                            <div class='blog-pager-container'>
+                                <a class='pager-btn' expr:href='data:blog.homepageUrl'>🏠 返回首页</a>
+                            </div>
+                        </b:if>
+                    </b:includable>
+                <b:includable id='aboutPostAuthor'><div class='author-name'><a class='g-profile' expr:href='data:post.author.profileUrl' rel='author'><span><data:post.author.name/></span></a></div></b:includable>
+                <b:includable id='addComments'><a expr:href='data:post.commentsUrl' expr:onclick='data:post.commentsUrlOnclick'><b:message name='messages.postAComment'/></a></b:includable>
+                <b:includable id='blogThisShare'>
+  <b:with value='&quot;window.open(this.href, \&quot;_blank\&quot;, \&quot;_blank\&quot;, \&quot;height=270,width=475\&quot;); return false;&quot;' var='onclick'>
+    <b:include name='platformShare'/>
+  </b:with>
+</b:includable>
+                <b:includable id='bylineByName' var='byline'>
+  <b:switch var='data:byline.name'>
+  <b:case value='share'/>
+    <b:include cond='data:post.shareUrl' name='postShareButtons'/>
+  <b:case value='comments'/>
+    <b:include cond='data:post.allowComments' name='postCommentsLink'/>
+  <b:case value='location'/>
+    <b:include cond='data:post.location' name='postLocation'/>
+  <b:case value='timestamp'/>
+    <b:include cond='not data:view.isPage' name='postTimestamp'/>
+  <b:case value='author'/>
+    <b:include name='postAuthor'/>
+  <b:case value='labels'/>
+    <b:include cond='data:post.labels' name='postLabels'/>
+  <b:case value='icons'/>
+    <b:include cond='data:post.emailPostUrl' name='emailPostIcon'/>
+  </b:switch>
+</b:includable>
+                <b:includable id='bylineRegion' var='regionItems'>
+  <b:loop values='data:regionItems' var='byline'>
+    <b:include data='byline' name='bylineByName'/>
+  </b:loop>
+</b:includable>
+                <b:includable id='commentAuthorAvatar'><div class='avatar-image-container'><img class='author-avatar' expr:src='data:comment.authorAvatarSrc' height='35' width='35'/></div></b:includable>
+                <b:includable id='commentDeleteIcon' var='comment'><span expr:class='&quot;item-control &quot; + data:comment.adminClass'><a class='comment-delete' expr:href='data:comment.deleteUrl'><img src='https://resources.blogblog.com/img/icon_delete13.gif'/></a></span></b:includable>
+                <b:includable id='commentForm' var='post'><iframe allowtransparency='allowtransparency' class='blogger-iframe-colorize' frameborder='0' id='comment-editor' src='' width='100%'/></b:includable>
+                <b:includable id='commentFormIframeSrc' var='post'><a expr:href='data:post.commentFormIframeSrc' id='comment-editor-src'/></b:includable>
+                <b:includable id='commentItem' var='comment'><div class='comment' expr:id='&quot;c&quot; + data:comment.id'><div class='comment-block'><data:comment.body/></div></div></b:includable>
+                <b:includable id='commentList' var='comments'><b:loop values='data:comments' var='comment'><b:include data='comment' name='commentItem'/></b:loop></b:includable>
+                <b:includable id='commentPicker' var='post'><b:include data='post' name='comments'/></b:includable>
+                <b:includable id='comments' var='post'><section class='comments' id='comments'/></b:includable>
+                <b:includable id='commentsLink'><a class='comment-link' expr:href='data:post.commentsUrl'><data:messages.postAComment/></a></b:includable>
+                <b:includable id='commentsLinkIframe'>
+  </b:includable>
+                <b:includable id='commentsTitle'>
+  <h3 class='title'><data:messages.comments/></h3>
+</b:includable>
+                <b:includable id='defaultAdUnit'>
+  <ins class='adsbygoogle' data-ad-format='auto' expr:data-ad-client='data:adClientId ?: data:blog.adsenseClientId' expr:data-ad-host='data:blog.adsenseHostId' expr:style='data:style ?: &quot;display: block;&quot;'>
+    <b:attr cond='not data:blog.analytics4' expr:value='data:blog.analyticsAccountNumber' name='data-analytics-uacct'/>
+  </ins>
+  <script>
+   (adsbygoogle = window.adsbygoogle || []).push({});
+ </script>
+</b:includable>
+                <b:includable id='emailPostIcon'>
+  <span class='byline post-icons'>
+    <span class='item-action'>
+      <a expr:href='data:post.emailPostUrl' expr:title='data:messages.emailPost'>
+        <b:include data='{ iconClass: &quot;touch-icon sharing-icon&quot; }' name='emailIcon'/>
+      </a>
+    </span>
+  </span>
+</b:includable>
+                <b:includable id='facebookShare'>
+  <b:with value='&quot;window.open(this.href, \&quot;_blank\&quot;, \&quot;height=430,width=640\&quot;); return false;&quot;' var='onclick'>
+    <b:include name='platformShare'/>
+  </b:with>
+</b:includable>
+                <b:includable id='feedLinks'>
+  <b:if cond='!data:view.isPost'> <b:if cond='data:feedLinks'>
+      <div class='blog-feeds'>
+        <b:include data='feedLinks' name='feedLinksBody'/>
+      </div>
+    </b:if>
+  <b:else/> <div class='post-feeds'>
+      <b:loop index='postIndex' values='data:posts' var='post'>
+        <b:if cond='data:post.allowComments and data:post.feedLinks'>
+          <b:include data='post.feedLinks' name='feedLinksBody'/>
+        </b:if>
+      </b:loop>
+    </div>
+  </b:if>
+</b:includable>
+                <b:includable id='feedLinksBody' var='links'>
+  <div class='feed-links'>
+  <data:messages.subscribeTo/>
+  <b:loop values='data:links' var='f'>
+     <a class='feed-link' expr:href='data:f.url' expr:type='data:f.mimeType' target='_blank'><data:f.name/> (<data:f.feedType/>)</a>
+  </b:loop>
+  </div>
+</b:includable>
+                <b:includable id='footerBylines'>
+  <b:if cond='data:widgets.Blog.first.footerBylines'>
+    <b:loop index='i' values='data:widgets.Blog.first.footerBylines' var='region'>
+      <b:if cond='not data:region.items.empty'>
+        <div expr:class='&quot;post-footer-line post-footer-line-&quot; + (data:i + 1)'>
+          <b:with value='&quot;footer-&quot; + (data:i + 1)' var='regionName'>
+            <b:include data='region.items' name='bylineRegion'/>
+          </b:with>
+        </div>
+      </b:if>
+    </b:loop>
+  </b:if>
+</b:includable>
+                <b:includable id='googlePlusShare'>
+</b:includable>
+                <b:includable id='headerByline'>
+  <b:if cond='data:widgets.Blog.first.headerByline'>
+    <div class='post-header'>
+      <div class='post-header-line-1'>
+         <b:with value='&quot;header-1&quot;' var='regionName'>
+          <b:include data='data:widgets.Blog.first.headerByline.items' name='bylineRegion'/>
+        </b:with>
+      </div>
+    </div>
+  </b:if>
+</b:includable>
+                <b:includable id='homePageLink'>
+  <a class='home-link' expr:href='data:blog.homepageUrl'>
+    <data:messages.home/>
+  </a>
+</b:includable>
+                <b:includable id='iframeComments' var='post'>
+</b:includable>
+                <b:includable id='inlineAd' var='post'><div class='inline-ad'/></b:includable>
+                <b:includable id='linkShare'>
+  <b:with value='&quot;window.prompt(\&quot;Copy to clipboard: Ctrl+C, Enter\&quot;, \&quot;&quot; + data:originalUrl + &quot;\&quot;); return false;&quot;' var='onclick'>
+    <b:include name='platformShare'/>
+  </b:with>
+</b:includable>
+                <b:includable id='nextPageLink'><a class='blog-pager-older-link' expr:href='data:olderPageUrl'><data:messages.olderPosts/></a></b:includable>
+                <b:includable id='otherSharingButton'>
+  <span class='sharing-platform-button sharing-element-other' expr:aria-label='data:messages.shareToOtherApps.escaped' expr:data-url='data:originalUrl' expr:title='data:messages.shareToOtherApps.escaped' role='menuitem' tabindex='-1'>
+    <b:with value='{key: &quot;sharingOther&quot;}' var='platform'>
+      <b:include name='sharingPlatformIcon'/>
+    </b:with>
+    <span class='platform-sharing-text'><data:messages.shareOtherApps.escaped/></span>
+  </span>
+</b:includable>
+                <b:includable id='platformShare'>
+  <a expr:class='&quot;goog-inline-block sharing-&quot; + data:platform.key' expr:data-url='data:originalUrl' expr:href='data:shareUrl + &quot;&amp;target=&quot; + data:platform.target' expr:onclick='data:onclick ? data:onclick : &quot;&quot;' expr:title='data:platform.shareMessage' target='_blank'>
+    <span class='share-button-link-text'>
+      <data:platform.shareMessage/>
+    </span>
+  </a>
+</b:includable>
+                <b:includable id='post' var='post'><div class='post'/></b:includable>
+                <b:includable id='postAuthor'>
+  <span class='byline post-author vcard'>
+    <span class='post-author-label'>
+      <data:byline.label/>
+    </span>
+    <span class='fn'>
+      <b:if cond='data:post.author.profileUrl'>
+        <meta expr:content='data:post.author.profileUrl'/>
+       <a class='g-profile' expr:href='data:post.author.profileUrl' rel='author' title='author profile'>
+          <span><data:post.author.name/></span>
+        </a>
+      <b:else/>
+        <span><data:post.author.name/></span>
+      </b:if>
+    </span>
+  </span>
+</b:includable>
+                <b:includable id='postBody' var='post'><div class='post-body'><data:post.body/></div></b:includable>
+                <b:includable id='postBodySnippet' var='post'>
+  <b:include data='post' name='postBody'/>
+</b:includable>
+                <b:includable id='postCommentsAndAd' var='post'><b:include data='post' name='post'/></b:includable>
+                <b:includable id='postCommentsLink'/>
+                <b:includable id='postFooter' var='post'><div class='post-footer'/></b:includable>
+                <b:includable id='postFooterAuthorProfile' var='post'>
+  <b:if cond='data:post.author.aboutMe and data:view.isPost'>
+    <div class='author-profile'>
+      <b:if cond='data:post.author.authorPhoto.url'>
+        <img class='author-image' expr:src='data:post.author.authorPhoto.url' width='50px'/>
+       <div class='author-about'>
+          <b:include data='post' name='aboutPostAuthor'/>
+        </div>
+      <b:else/>
+        <b:include data='post' name='aboutPostAuthor'/>
+      </b:if>
+    </div>
+  </b:if>
+</b:includable>
+                <b:includable id='postHeader' var='post'/>
+                <b:includable id='postJumpLink' var='post'><a expr:href='data:post.url fragment &quot;more&quot;'>More</a></b:includable>
+                <b:includable id='postLabels'/>
+                <b:includable id='postLocation'/>
+                <b:includable id='postMeta' var='post'/>
+                <b:includable id='postMetadataJSONImage'>
+  &quot;image&quot;: {
+    &quot;@type&quot;: &quot;ImageObject&quot;,
+    <b:if cond='data:post.featuredImage.isResizable'>
+    &quot;url&quot;: &quot;<b:eval expr='resizeImage(data:post.featuredImage, 1200, &quot;1200:630&quot;)'/>&quot;,
+    &quot;height&quot;: 630,
+    &quot;width&quot;: 1200
+    <b:else/>
+    &quot;url&quot;: &quot;https://blogger.googleusercontent.com/img/b/U2hvZWJveA/AVvXsEgfMvYAhAbdHksiBA24JKmb2Tav6K0GviwztID3Cq4VpV96HaJfy0viIu8z1SSw_G9n5FQHZWSRao61M3e58ImahqBtr7LiOUS6m_w59IvDYwjmMcbq3fKW4JSbacqkbxTo8B90dWp0Cese92xfLMPe_tg11g/w1200/&quot;,
+    &quot;height: 348,
+    &quot;width&quot;: 1200
+    </b:if>
+  },
+</b:includable>
+                <b:includable id='postMetadataJSONPublisher'>
+ &quot;publisher&quot;: {
+    &quot;@type&quot;: &quot;Organization&quot;,
+    &quot;name&quot;: &quot;Blogger&quot;,
+    &quot;logo&quot;: {
+      &quot;@type&quot;: &quot;ImageObject&quot;,
+      &quot;url&quot;: &quot;https://blogger.googleusercontent.com/img/b/U2hvZWJveA/AVvXsEgfMvYAhAbdHksiBA24JKmb2Tav6K0GviwztID3Cq4VpV96HaJfy0viIu8z1SSw_G9n5FQHZWSRao61M3e58ImahqBtr7LiOUS6m_w59IvDYwjmMcbq3fKW4JSbacqkbxTo8B90dWp0Cese92xfLMPe_tg11g/h60/&quot;,
+      &quot;width&quot;: 206,
+      &quot;height&quot;: 60
+    }
+  },
+</b:includable>
+                <b:includable id='postPagination'/>
+                <b:includable id='postReactions'/>
+                <b:includable id='postShareButtons'/>
+                <b:includable id='postTimestamp'/>
+                <b:includable id='postTitle' var='post'/>
+                <b:includable id='previousPageLink'><a class='blog-pager-newer-link' expr:href='data:newerPageUrl'><data:messages.newerPosts/></a></b:includable>
+                <b:includable id='sharingButton'>
+  <span expr:aria-label='data:platform.shareMessage' expr:class='&quot;sharing-platform-button sharing-element-&quot; + data:platform.key' expr:data-href='data:shareUrl + &quot;&amp;target=&quot; + data:platform.target' expr:data-url='data:originalUrl' expr:title='data:platform.shareMessage' role='menuitem' tabindex='-1'>
+    <b:include name='sharingPlatformIcon'/>
+    <span class='platform-sharing-text'><data:platform.name/></span>
+  </span>
+</b:includable>
+                <b:includable id='sharingButtonContent'>
+  <div class='flat-icon-button ripple'>
+    <b:include name='shareIcon'/>
+  </div>
+</b:includable>
+                <b:includable id='sharingButtons'>
+  <div class='sharing' expr:aria-owns='&quot;sharing-popup-&quot; + data:sharingId' expr:data-title='data:shareTitle'>
+    <button class='sharing-button touch-icon-button' expr:aria-controls='&quot;sharing-popup-&quot; + data:sharingId' expr:aria-label='data:messages.share.escaped' expr:id='&quot;sharing-button-&quot; + data:sharingId' role='button'>
+      <b:include name='sharingButtonContent'/>
+    </button>
+    <b:include name='sharingButtonsMenu'/>
+  </div>
+</b:includable>
+                <b:includable id='sharingButtonsMenu'>
+  <div class='share-buttons-container'>
+    <ul aria-hidden='true' class='share-buttons hidden' expr:aria-label='data:messages.share.escaped' expr:id='&quot;sharing-popup-&quot; + data:sharingId' role='menu'>
+      <b:loop values='(data:platforms ?: data:blog.sharing.platforms) filter (p =&gt; p.key not in {&quot;blogThis&quot;})' var='platform'>
+        <li>
+          <b:include name='sharingButton'/>
+        </li>
+      </b:loop>
+      <li aria-hidden='true' class='hidden'>
+        <b:include name='otherSharingButton'/>
+      </li>
+    </ul>
+  </div>
+</b:includable>
+                <b:includable id='sharingPlatformIcon'>
+  <b:include data='{ iconClass: (&quot;touch-icon sharing-&quot; + data:platform.key) }' expr:name='data:platform.key + &quot;Icon&quot;'/>
+</b:includable>
+                <b:includable id='threadedCommentForm' var='post'>
+  <div class='comment-form'>
+    <a name='comment-form'/>
+    <h4 id='comment-post-message'><data:messages.postAComment/></h4>
+    <b:if cond='data:this.messages.blogComment != &quot;&quot;'>
+      <p><data:this.messages.blogComment/></p>
+    </b:if>
+    <b:include data='post' name='commentFormIframeSrc'/>
+    <iframe allowtransparency='allowtransparency' class='blogger-iframe-colorize blogger-comment-from-post' expr:height='data:cmtIframeInitialHeight ?: &quot;90px&quot;' frameborder='0' id='comment-editor' name='comment-editor' src='' width='100%'/>
+    <data:post.cmtfpIframe/>
+    <script type='text/javascript'>
+      BLOG_CMT_createIframe(data:post.appRpcRelayPath);
+</script>
+  </div>
+</b:includable>
+                <b:includable id='threadedCommentJs' var='post'>
+  <script async='async' expr:src='data:post.commentSrc' type='text/javascript'/>
+  <b:template-script inline='true' name='threaded_comments'/>
+  <script type='text/javascript'>
+    blogger.widgets.blog.initThreadedComments(
+        <data:post.commentJso/>,
+        <data:post.commentMsgs/>,
+        <data:post.commentConfig/>);
+</script>
+</b:includable>
+                <b:includable id='threadedComments' var='post'>
+  <section class='comments threaded' expr:data-embed='data:post.embedCommentForm' expr:data-num-comments='data:post.numberOfComments' id='comments'>
+    <a name='comments'/>
+
+    <b:include name='commentsTitle'/>
+
+    <div class='comments-content'>
+      <b:if cond='data:post.embedCommentForm'>
+        <b:include data='post' name='threadedCommentJs'/>
+      </b:if>
+      <div id='comment-holder'>
+         <data:post.commentHtml/>
+      </div>
+    </div>
+
+    <p class='comment-footer'>
+       <b:if cond='data:post.allowNewComments'>
+        <b:include data='post' name='threadedCommentForm'/>
+      <b:else/>
+        <data:post.noNewCommentsText/>
+      </b:if>
+      <b:if cond='data:post.showManageComments'>
+        <b:include data='post' name='manageComments'/>
+      </b:if>
+    </p>
+
+    <b:if cond='data:showCmtPopup'>
+      <div id='comment-popup'>
+        <iframe allowtransparency='allowtransparency' frameborder='0' id='comment-actions' name='comment-actions' scrolling='no'>
+        </iframe>
+      </div>
+       </b:if>
+  </section>
+</b:includable>
+                <b:includable id='tooltipCss'>
+  <style>
+    .post-body a.b-tooltip-container { position: relative; display: inline-block; }
+    .post-body a.b-tooltip-container .b-tooltip { display: block !important; position: absolute; top: 100%; left: 50%; transform: translate(-20%, 1px); visibility: hidden; opacity: 0; z-index: 1; transition: opacity 0.2s ease-in-out; }
+    .post-body a.b-tooltip-container .b-tooltip iframe { width: 200px; height: 198px; max-width: none; border: none; border-radius: var(--radius-pill); box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.2); }
+    @media (hover: hover) { .post-body a.b-tooltip-container:hover .b-tooltip { visibility: visible; opacity: 1; } }
+  </style>
+</b:includable>
+              </b:widget>
+            </b:section>
+        </main>
+
+        <aside class='sidebar' id='blogSidebar'>
+
+
+            <b:section id='sidebar-changelog-section' showaddelement='no'>
+              <b:widget id='HTML100' locked='false' title='更新日志' type='HTML' version='2' visible='true'>
+                <b:includable id='main'>
+                  <div class='sidebar-widget changelog-card'>
+                    <a class='changelog-btn' href='https://blog.430309.xyz/p/changelog.html'>
+                        查看更新历史 ✨
+                    </a>
+                  </div>
+                </b:includable>
+              </b:widget>
+            </b:section>
+
+            <b:section id='sidebar-labels-section' showaddelement='no'>
+              <b:widget id='Label1' locked='false' title='文章分类' type='Label' version='2' visible='true'>
+                <b:widget-settings>
+                  <b:widget-setting name='sorting'>ALPHA</b:widget-setting>
+                  <b:widget-setting name='display'>LIST</b:widget-setting>
+                  <b:widget-setting name='selectedLabelsList'/>
+                  <b:widget-setting name='showType'>ALL</b:widget-setting>
+                  <b:widget-setting name='showFreqNumbers'>false</b:widget-setting>
+                </b:widget-settings>
+                <b:includable id='main'>
+                  <div class='sidebar-widget'>
+                    <h2>🏷&#65039; 标签分类</h2>
+                    <div class='sidebar-labels'>
+                      <b:loop values='data:labels' var='label'>
+                        <a class='sidebar-label-item' expr:href='data:label.url'>
+                          <data:label.name/> (<data:label.count/>)
+                        </a>
+                      </b:loop>
+                    </div>
+                  </div>
+                </b:includable>
+                <b:includable id='cloud'>
+  <b:loop values='data:labels' var='label'>
+    <span class='label-size'>
+      <b:class expr:name='&quot;label-size-&quot; + data:label.cssSize'/>
+      <a class='label-name' expr:href='data:label.url'>
+        <data:label.name/>
+        <b:if cond='data:this.showFreqNumbers'>
+          <span class='label-count'><data:label.count/></span>
+        </b:if>
+      </a>
+    </span>
+  </b:loop>
+</b:includable>
+                <b:includable id='content'>
+  <div class='widget-content'>
+    <b:class expr:name='data:this.display + &quot;-label-widget-content&quot;'/>
+    <b:include cond='data:this.display == &quot;list&quot;' name='list'/>
+    <b:include cond='data:this.display == &quot;cloud&quot;' name='cloud'/>
+  </div>
+</b:includable>
+                <b:includable id='list'>
+  <ul>
+    <b:loop values='data:labels' var='label'>
+      <li>
+        <a class='label-name' expr:href='data:label.url'>
+          <data:label.name/>
+          <b:if cond='data:this.showFreqNumbers'>
+            <span class='label-count'><data:label.count/></span>
+          </b:if>
+        </a>
+      </li>
+    </b:loop>
+  </ul>
+</b:includable>
+              </b:widget>
+            </b:section>
+
+            <b:section id='sidebar-archive-section' showaddelement='no'>
+              <b:widget id='BlogArchive1' locked='false' title='文章归档' type='BlogArchive' version='2' visible='true'>
+                <b:widget-settings>
+                  <b:widget-setting name='showStyle'>FLAT</b:widget-setting>
+                  <b:widget-setting name='yearPattern'>yyyy</b:widget-setting>
+                  <b:widget-setting name='showWeekEnd'>true</b:widget-setting>
+                  <b:widget-setting name='monthPattern'>MMMM yyyy</b:widget-setting>
+                  <b:widget-setting name='dayPattern'>MMM dd</b:widget-setting>
+                  <b:widget-setting name='weekPattern'>MM/dd</b:widget-setting>
+                  <b:widget-setting name='chronological'>false</b:widget-setting>
+                  <b:widget-setting name='showPosts'>false</b:widget-setting>
+                  <b:widget-setting name='frequency'>MONTHLY</b:widget-setting>
+                </b:widget-settings>
+                <b:includable id='main'>
+                  <div class='sidebar-widget'>
+                    <h2>📅 文章归档</h2>
+                    <ul class='archive-list'>
+                      <b:loop values='data:data' var='i'>
+                        <li>
+                          <a expr:href='data:i.url'><data:i.name/></a>
+                          <span class='archive-count'>(<data:i.post-count/>)</span>
+                        </li>
+                      </b:loop>
+                    </ul>
+                  </div>
+                </b:includable>
+                <b:includable id='content'>
+  <div class='widget-content'>
+    <div id='ArchiveList'>
+      <div expr:id='data:widget.instanceId + &quot;_ArchiveList&quot;'>
+        <b:include cond='data:this.style == &quot;HIERARCHY&quot;' name='hierarchy'/>
+        <b:include cond='data:this.style in {&quot;FLAT&quot;, &quot;MENU&quot;}' name='flat'/>
+      </div>
+    </div>
+  </div>
+</b:includable>
+                <b:includable id='flat'>
+  <ul class='flat'>
+    <b:loop values='data:data' var='i'>
+      <li class='archivedate'>
+        <a expr:href='data:i.url'>
+          <data:i.name/><span class='post-count'><data:i.post-count/></span>
+        </a>
+      </li>
+    </b:loop>
+  </ul>
+</b:includable>
+                <b:includable id='hierarchy'>
+  <b:include data='data' name='interval'/>
+</b:includable>
+                <b:includable id='interval' var='intervals'>
+  <ul class='hierarchy'>
+    <b:loop values='data:intervals' var='interval'>
+      <li class='archivedate'>
+        <div class='hierarchy-title'>
+          <a class='post-count-link' expr:href='data:interval.url'>
+            <data:interval.name/>
+            <span class='post-count'><data:interval.post-count/></span>
+          </a>
+        </div>
+        <div class='hierarchy-content'>
+          <b:include cond='data:interval.data' data='interval.data' name='interval'/>
+          <b:include cond='data:interval.posts' data='interval.posts' name='posts'/>
+        </div>
+      </li>
+    </b:loop>
+  </ul>
+</b:includable>
+                <b:includable id='posts' var='posts'>
+  <ul class='posts hierarchy'>
+    <b:loop index='postIndex' values='data:posts' var='post'>
+      <li>
+        <a expr:href='data:post.url'><data:post.title/></a>
+      </li>
+    </b:loop>
+  </ul>
+</b:includable>
+              </b:widget>
+            </b:section>
+        </aside>
+    </div>
+
+    <footer>
+         <div class='footer-primary-info'>
+            Copyright &#169; 2019 - 2026 <a href='https://blog.430309.xyz/' target='_blank'>AmiyaAA&#39;s Blog</a> - Powered by <a href='https://www.blogger.com/' target='_blank'>Blogger</a> - Designed by <a href='https://gemini.google.com/' target='_blank'>Gemini</a> - <a href='https://icp.gov.moe/?keyword=20260309' target='_blank'>萌ICP备20260309号</a>
+        </div>
+        <div class='footer-cc-license'>
+            本站内容如非特别声明均在<a href='https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh' target='_blank'>知识共享 署名-非商业性使用-相同方式共享 4.0 国际协议</a> 之条款下提供
+        </div>
+        <button aria-label='Back to Top' class='back-to-top' id='backToTop'>
+            <svg viewBox='0 0 24 24'><path d='M18 15l-6-6-6 6'/></svg>
+         </button>
+    </footer>
+
+    <!-- Mobile Radial Navigation HTML -->
+    <button id='mobileNavFloatingBtn' class='mobile-nav-floating-btn' aria-label='打开导航'>
+        <svg viewBox='0 0 24 24' width='22' height='22' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'>
+            <circle cx='12' cy='12' r='10'></circle>
+            <polygon points='16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76'></polygon>
+        </svg>
+    </button>
+    
+    <div id='mobileRadialNavOverlay' class='radial-nav-overlay'>
+        <div class='radial-menu-container'>
+            <div class='radial-menu-bg'></div>
+            
+            <button id='radialNavCloseBtn' class='radial-center-btn' aria-label='关闭导航'>
+                <svg viewBox='0 0 24 24' width='20' height='20' fill='none' stroke='currentColor' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'>
+                    <line x1='18' y1='6' x2='6' y2='18'></line>
+                    <line x1='6' y1='6' x2='18' y2='18'></line>
+                </svg>
+            </button>
+            
+            <a href='https://blog.430309.xyz/' class='radial-item active' style='--tx: 0px; --ty: -125px; --delay: 0;'>
+                <span>主页</span>
+            </a>
+            <a href='https://blog.430309.xyz/p/friends.html' class='radial-item' style='--tx: 118.9px; --ty: -38.6px; --delay: 1;'>
+                <span>友链</span>
+            </a>
+            <a href='https://pl.430309.xyz/' class='radial-item' style='--tx: 73.5px; --ty: 101.1px; --delay: 2;'>
+                <span>留言板</span>
+            </a>
+            <a href='https://blog.430309.xyz/p/bangumi-bgm.html' class='radial-item' style='--tx: -73.5px; --ty: 101.1px; --delay: 3;'>
+                <span>番组计划</span>
+            </a>
+            <a href='https://blog.430309.xyz/p/about-me.html' class='radial-item' style='--tx: -118.9px; --ty: -38.6px; --delay: 4;'>
+                <span>关于我</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Unify desktop widgets to mobile sidebar dynamically to prevent code duplication -->
+    <script type='text/javascript'>
+        //<![CDATA[
+        (function() {
+            const leftSidebar = document.getElementById('leftSidebar');
+            const blogSidebar = document.getElementById('blogSidebar');
+            if (leftSidebar && blogSidebar) {
+                const author = leftSidebar.querySelector('.author-card');
+                const notice = leftSidebar.querySelector('.notice-card');
+                const countdown = leftSidebar.querySelector('.countdown-widget');
+                
+                if (author) {
+                    const clone = author.cloneNode(true);
+                    clone.classList.add('mobile-only-widget');
+                    blogSidebar.appendChild(clone);
+                }
+                if (notice) {
+                    const clone = notice.cloneNode(true);
+                    clone.classList.add('mobile-only-widget');
+                    blogSidebar.appendChild(clone);
+                }
+                if (countdown) {
+                    const clone = countdown.cloneNode(true);
+                    clone.classList.add('mobile-only-widget');
+                    blogSidebar.appendChild(clone);
+                }
+            }
+        })();
+        //]]>
+    </script>
+
+    <script type='text/javascript'>
+        //<![CDATA[
+const toggleBtn=document.getElementById("themeToggle"),root=document.documentElement,savedTheme=localStorage.getItem("theme"),systemPrefersDark=window.matchMedia("(prefers-color-scheme: dark)").matches;"dark"===savedTheme||!savedTheme&&systemPrefersDark?root.setAttribute("data-theme","dark"):root.setAttribute("data-theme","light"),toggleBtn.addEventListener("click",()=>{let e=root.getAttribute("data-theme"),t="light"===e?"dark":"light",n=document.getElementById("theme-transition-mask"),o=document.getElementById("theme-transition-text");n&&o?(document.body.style.overflow="hidden","dark"===t?(o.textContent="月之暗面",n.className="theme-transition-mask to-dark active"):(o.textContent="月之亮面",n.className="theme-transition-mask to-light active"),setTimeout(()=>{root.setAttribute("data-theme",t),localStorage.setItem("theme",t),window.walineInstance&&"function"==typeof window.walineInstance.update&&window.walineInstance.update({dark:"dark"===t}),setTimeout(()=>{n.classList.remove("active"),setTimeout(()=>{n.className="theme-transition-mask",document.body.style.overflow=""},400)},600)},400)):(root.setAttribute("data-theme",t),localStorage.setItem("theme",t),window.walineInstance&&"function"==typeof window.walineInstance.update&&window.walineInstance.update({dark:"dark"===t})),toggleBtn.classList.remove("clicked"),toggleBtn.offsetWidth,toggleBtn.classList.add("clicked")});const menuToggle=document.getElementById("menuToggle"),sidebarOverlay=document.getElementById("sidebarOverlay"),bodyNode=document.body;function toggleSidebar(){let e=document.getElementById("blogSidebar");e&&e.classList.toggle("active"),sidebarOverlay&&sidebarOverlay.classList.toggle("active"),bodyNode.classList.toggle("sidebar-open")}menuToggle&&sidebarOverlay&&(menuToggle.addEventListener("click",toggleSidebar),sidebarOverlay.addEventListener("click",toggleSidebar)),function(){let e=document.getElementById("mobileSearchToggle"),t=document.getElementById("searchForm"),n=document.getElementById("searchInput");e&&t&&n&&(e.addEventListener("click",function(e){e.stopPropagation(),t.classList.toggle("active"),t.classList.contains("active")&&n.focus()}),document.addEventListener("click",function(o){window.innerWidth<=768&&!t.contains(o.target)&&o.target!==e&&""===n.value.trim()&&t.classList.remove("active")}),n.addEventListener("blur",function(){window.innerWidth<=768&&""===n.value.trim()&&setTimeout(()=>{t.classList.remove("active")},200)}))}(),function(){let e=document.querySelector(".post-publish-date"),t=document.getElementById("outdateWarning"),n=document.getElementById("outdateDays");if(e&&t&&n){let o=e.getAttribute("data-date");if(o){let l=new Date(o).getTime(),r=Date.now(),i=Math.floor((r-l)/864e5);i>7&&(n.textContent=i,t.style.display="block")}}}(),function(){let e=document.getElementById("backToTop");e&&(window.addEventListener("scroll",function(){let t=window.pageYOffset||document.documentElement.scrollTop||document.body.scrollTop;t>400?e.classList.add("show"):e.classList.remove("show")}),e.addEventListener("click",function(){try{window.scrollTo({top:0,behavior:"smooth"})}catch(e){document.documentElement.scrollTop=0,document.body.scrollTop=0}}))}(),function(){let e="2027-01-01 00:00:00",t=document.querySelectorAll(".countdown-widget");if(0===t.length)return;let n=new Date(e.replace(/-/g,"/")).getTime();function o(){let e=Date.now(),o=n-e;if(o<=0){t.forEach(e=>{let t=e.querySelector(".cd-days")||e.querySelector('[id="cd-days"]');t&&(t.textContent="0");let n=e.querySelector(".countdown-event")||e.querySelector('[id="countdown-event-title"]');n&&(n.textContent="期待的日子已经到来捏！")}),clearInterval(l);return}let r=Math.ceil(o/864e5);t.forEach(e=>{let t=e.querySelector(".cd-days")||e.querySelector('[id="cd-days"]');t&&(t.textContent=r)})}t.forEach(t=>{let n=t.querySelector(".countdown-event")||t.querySelector('[id="countdown-event-title"]'),o=t.querySelector(".countdown-target-date")||t.querySelector('[id="countdown-target-text"]');n&&(n.textContent="距离 2027 新年还有"),o&&(o.textContent=`目标日期: ${e.split(" ")[0]}`)}),o();let l=setInterval(o,6e4)}(),function(){let e=[{js:"https://cdn.jsdelivr.net/npm/@waline/client@2.15.8/dist/waline.js",css:"https://cdn.jsdelivr.net/npm/@waline/client@2.15.8/dist/waline.css"},{js:"https://unpkg.com/@waline/client@2.15.8/dist/waline.js",css:"https://unpkg.com/@waline/client@2.15.8/dist/waline.css"},{js:"https://npm.elemecdn.com/@waline/client@2.15.8/dist/waline.js",css:"https://npm.elemecdn.com/@waline/client@2.15.8/dist/waline.css"}];function t(n){if(n>=e.length){let o=document.getElementById("wl-loading-status");o&&(o.innerHTML="❌ 基础 CDN 链路全部被拦截或加载超时，请检查是否启用了激进的广告拦截插件（如 AdGuard）。");return}let l=e[n],r=document.createElement("link");r.rel="stylesheet",r.href=l.css,document.head.appendChild(r);let i=document.createElement("script");i.src=l.js,i.async=!0,i.onerror=function(){console.warn(`CDN 节点 [${n}] 加载失败，正在无缝切换到备用链路...`),i.remove(),r.remove(),t(n+1)},i.onload=function(){(function e(){let t=document.getElementById("waline-comments");if(!t)return;let n=root.getAttribute("data-theme")||"light";try{let o="undefined"!=typeof Waline&&Waline.init?Waline:window.Waline||null;if(o&&"function"==typeof o.init){let l=document.getElementById("wl-loading-status");l&&l.remove(),window.walineInstance=o.init({el:"#waline-comments",serverURL:"https://pl.430309.xyz/",dark:"dark"===n,pageview:!0,comment:!0,locale:{placeholder:"期待你的神评捏 "}})}else document.getElementById("wl-loading-status").innerHTML="❌ Waline 初始化失败，未能正确绑定核心对象。"}catch(r){console.error(r);let i=document.getElementById("waline-comments");i&&(i.innerHTML="❌ 静态库加载正常，但初始化异常。请确保你的 Vercel 后端地址已唤醒。")}})()},document.head.appendChild(i)}function n(){let e=document.getElementById("hitokoto-text"),t=document.getElementById("hitokoto-from");e&&fetch("https://v1.hitokoto.cn?c=a&c=b&c=c").then(e=>e.json()).then(n=>{e.textContent=n.hitokoto,t&&(t.textContent=n.from_author?`—— ${n.from_author} 《${n.from}》`:`—— 《${n.from}》`)}).catch(n=>{console.error("Hitokoto获取失败:",n),e.textContent="有思绪在远方闪烁，但此刻无法触及捏。",t&&(t.textContent="—— 极客猫猫")})}function o(){let e=document.getElementById("waline-comments");if(e){if("IntersectionObserver"in window){let o=new IntersectionObserver(e=>{e.forEach(e=>{e.isIntersecting&&(t(0),n(),o.disconnect())})},{rootMargin:"200px"});o.observe(e)}else t(0),n()}}"loading"===document.readyState?document.addEventListener("DOMContentLoaded",o):o()}(),function(){let e=document.getElementById("scrollProgressBar");function t(){let e=document.querySelectorAll(".post-card, .sidebar-widget, .countdown-widget, .hitokoto-container, #waline-comments");if("IntersectionObserver"in window){let t=new IntersectionObserver(e=>{e.forEach(e=>{e.isIntersecting&&(e.target.classList.add("revealed"),t.unobserve(e.target))})},{root:null,rootMargin:"0px 0px -50px 0px",threshold:.02});e.forEach(e=>{e.classList.add("reveal-item"),t.observe(e)})}else e.forEach(e=>{e.classList.add("revealed")})}e&&window.addEventListener("scroll",function(){let t=document.body.scrollTop||document.documentElement.scrollTop,n=document.documentElement.scrollHeight-document.documentElement.clientHeight;e.style.width=(n>0?t/n*100:0)+"%"},{passive:!0}),"loading"===document.readyState?document.addEventListener("DOMContentLoaded",t):t()}(),function(){function e(e,t=400){if(!e)return"";if(e.includes("blogspot.com")||e.includes("googleusercontent.com")){let n=e.replace(/\/s[0-9]+(-c)?\//,`/w${t}/`).replace(/\/w[0-9]+(-c)?\//,`/w${t}/`);return n.replace(/=s[0-9]+(-c)?/,`=w${t}`).replace(/=w[0-9]+(-c)?/,`=w${t}`)}return e}function t(){let t=document.querySelectorAll(".post-body img");t.forEach((t,idx)=>{let n=t.getAttribute("src");if(n&&(n.includes("blogspot.com")||n.includes("googleusercontent.com"))){let o=e(n,400),l=e(n,800),r=e(n,1200);t.setAttribute("srcset",`${o} 400w, ${l} 800w, ${r} 1200w`),t.setAttribute("sizes","(max-width: 768px) 100vw, 800px"),t.hasAttribute("loading")||0===idx||t.setAttribute("loading","lazy")}});let n=document.querySelectorAll(".post-card");n.forEach(t=>{let n=t.querySelector(".post-html-source");if(!n)return;let o=n.getAttribute("data-html")||"",l=t.querySelector(".post-read-stats"),r=t.querySelector(".word-count-num"),i=t.querySelector(".read-time-num");if(l&&r&&i){let s=o.replace(/<\/?[^>]+(>|$)/g,""),a=function e(t){if(!t)return{words:0,minutes:0};let n=t.match(/[\u4e00-\u9fa5]/g),o=n?n.length:0,l=t.replace(/[\u4e00-\u9fa5]/g," "),r=l.split(/\s+/).filter(e=>e.trim().length>0),i=r.length;return{words:o+i,minutes:Math.ceil(o/400+i/220)||1}}(s);r.textContent=a.words,i.textContent=a.minutes,l.style.display="inline"}let c=t.querySelector(".post-thumbnail-wrap"),d=t.querySelector(".post-thumbnail-img");if(c&&d&&!d.getAttribute("src")){let u=o.match(/<img[^>]+src=["']([^"']+)["']/i);if(u&&u[1]){let m=u[1],g=e(m,400);d.setAttribute("src",g),c.style.display="block"}}})}"loading"===document.readyState?document.addEventListener("DOMContentLoaded",t):t()}(),function(){let e=document.querySelectorAll(".post-card");function t(){if(window.innerWidth>992){e.forEach(e=>e.classList.remove("scroll-active"));return}let t=null,n=1/0,o=window.innerHeight/2;e.forEach(e=>{let l=e.getBoundingClientRect(),r=l.top+l.height/2,i=Math.abs(o-r);i<n&&(n=i,t=e)}),e.forEach(e=>{e===t?e.classList.add("scroll-active"):e.classList.remove("scroll-active")})}e.length<=1||(window.addEventListener("scroll",t,{passive:!0}),window.addEventListener("resize",t),"loading"===document.readyState?document.addEventListener("DOMContentLoaded",t):t())}(),function(){let e=document.getElementById("page-loader"),t=document.getElementById("loader-progress-bar");if(!e||!t)return;document.body.style.overflow="hidden";let n=0,o=20,l=null,r=!1,i=Array.from(document.images),s=i.length,a=0;function c(){a++,s>0&&!r&&(o=Math.floor(20+a/s*65))}function d(){if(r)return;r=!0,o=100;let e=setInterval(()=>{n<100?((n+=3)>100&&(n=100),t.style.width=n+"%"):(clearInterval(e),l&&clearInterval(l),u())},8)}function u(){setTimeout(()=>{e.classList.add("fade-out"),document.body.style.overflow=""},400)}s>0?i.forEach(e=>{e.complete?c():(e.addEventListener("load",c),e.addEventListener("error",c))}):o=70,l=setInterval(()=>{n<o&&(n+=1,t.style.width=n+"%"),n>=100&&(clearInterval(l),u())},12),"complete"===document.readyState?d():window.addEventListener("load",d)}();
+//]]>
+    </script>
+
+    <!-- Mobile Radial Navigation Script -->
+    <script type='text/javascript'>
+        //<![CDATA[
+        (function() {
+            const floatBtn = document.getElementById('mobileNavFloatingBtn');
+            const overlay = document.getElementById('mobileRadialNavOverlay');
+            const closeBtn = document.getElementById('radialNavCloseBtn');
+            
+            if (!floatBtn || !overlay || !closeBtn) return;
+            
+            // Open menu
+            floatBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                overlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+            
+            // Close menu function
+            function closeMenu() {
+                overlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+            
+            // Close events
+            closeBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                closeMenu();
+            });
+            
+            overlay.addEventListener('click', function(e) {
+                if (e.target === overlay) {
+                    closeMenu();
+                }
+            });
+            
+            // Auto-highlight active item based on current URL
+            const currentUrl = window.location.href;
+            const radialItems = overlay.querySelectorAll('.radial-item');
+            let matchedAny = false;
+            
+            radialItems.forEach(item => {
+                const href = item.href;
+                if (href && href !== window.location.origin + '/' && currentUrl.startsWith(href.split('.html')[0])) {
+                    item.classList.add('active');
+                    matchedAny = true;
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+            
+            if (!matchedAny) {
+                const homeItem = overlay.querySelector('.radial-item:first-child');
+                if (homeItem) homeItem.classList.add('active');
+            }
+            
+            // Smooth scroll opacity effect for floating button
+            let scrollTimer = null;
+            window.addEventListener('scroll', function() {
+                floatBtn.style.opacity = '0.4';
+                if (scrollTimer !== null) {
+                    clearTimeout(scrollTimer);
+                }
+                scrollTimer = setTimeout(function() {
+                    floatBtn.style.opacity = '1.0';
+                }, 1200);
+            }, { passive: true });
+        })();
+        //]]>
+    </script>
+</body>
+</html>

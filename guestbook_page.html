@@ -1,0 +1,717 @@
+<!-- Guestbook Page Container 开始 -->
+<style>
+    /* 留言墙专属命名空间，防止样式冲突 */
+    .guestbook-page-container {
+        font-family: inherit;
+        color: var(--text-primary);
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 1rem 0;
+    }
+
+    .guestbook-header {
+        text-align: center;
+        margin-bottom: 2.5rem;
+        margin-top: 1.5rem;
+    }
+
+    .guestbook-title {
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: var(--text-primary);
+        margin-bottom: 1rem;
+        letter-spacing: 2px;
+        position: relative;
+        display: inline-block;
+    }
+
+    .guestbook-title::after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 45px;
+        height: 4px;
+        background: var(--accent-color);
+        border-radius: var(--radius-pill);
+    }
+
+    .guestbook-subtitle {
+        font-size: 0.95rem;
+        color: var(--text-secondary);
+        font-style: italic;
+        margin: 0;
+    }
+
+    /* 留言墙白板背景区域 */
+    .guestbook-board-wrapper {
+        background: #f7f9fa;
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+        padding: 2.5rem 2rem;
+        box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.03), var(--card-shadow);
+        margin-bottom: 3rem;
+        position: relative;
+        overflow: hidden;
+        transition: background-color 0.3s ease;
+    }
+
+    [data-theme="dark"] .guestbook-board-wrapper {
+        background: rgba(255, 82, 123, 0.03);
+    }
+
+    /* 背景装饰虚线 */
+    .guestbook-board-wrapper::before {
+        content: '';
+        position: absolute;
+        top: 2rem;
+        left: 2rem;
+        right: 2rem;
+        bottom: 2rem;
+        border: 1.5px dashed rgba(255, 82, 123, 0.15);
+        border-radius: 12px;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    /* 移动端缩小内边距与虚线边框，释放可显示区域 */
+    @media screen and (max-width: 550px) {
+        .guestbook-board-wrapper {
+            padding: 1.5rem 0.8rem;
+        }
+        .guestbook-board-wrapper::before {
+            top: 1rem;
+            left: 1rem;
+            right: 1rem;
+            bottom: 1rem;
+        }
+    }
+
+    /* 便签纵向滑动网格容器 */
+    .guestbook-board {
+        position: relative;
+        display: grid;
+        grid-template-columns: 1fr; /* 默认手机端：一行仅显示一列，自动拉伸居中 */
+        justify-content: center;
+        gap: 2.2rem 1.2rem;
+        z-index: 1;
+        max-height: 530px; /* 高度限制，超出之后允许纵向滚动 */
+        overflow-y: auto;
+        overflow-x: hidden; /* 强行禁止横向滚动，彻底解决左右滑动/溢出被剪裁的问题 */
+        padding: 1.5rem 0.6rem; /* 为图钉、胶带和旋转留出空间 */
+        scrollbar-width: thin;
+        scrollbar-color: rgba(255, 82, 123, 0.25) transparent;
+    }
+
+    /* 平板端屏幕：一行显示两个 */
+    @media screen and (min-width: 550px) and (max-width: 849px) {
+        .guestbook-board {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    /* 桌面端大屏幕：严格控制为一行三个，自动均分容器空间，不产生横向溢出 */
+    @media screen and (min-width: 850px) {
+        .guestbook-board {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    /* 自定义美观的纵向滚动条 */
+    .guestbook-board::-webkit-scrollbar {
+        width: 6px;
+    }
+    .guestbook-board::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.01);
+        border-radius: 10px;
+    }
+    .guestbook-board::-webkit-scrollbar-thumb {
+        background: rgba(255, 82, 123, 0.25);
+        border-radius: 10px;
+        transition: background-color 0.3s ease;
+    }
+    .guestbook-board::-webkit-scrollbar-thumb:hover {
+        background: var(--accent-color);
+    }
+
+    /* 骨架屏占位 */
+    .guestbook-loading {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 3rem 0;
+        color: var(--text-secondary);
+        font-style: italic;
+        font-size: 0.95rem;
+    }
+
+    /* 便签纸张基础样式 */
+    .note-card {
+        position: relative;
+        max-width: 250px; /* 锁定最大宽度，解决挤压与被剪裁的问题 */
+        width: 100%;
+        margin: 0 auto; /* 在网格网格中居中对齐 */
+        min-height: 200px;
+        padding: 1.5rem 1.2rem 2.2rem 1.2rem;
+        border-radius: 2px;
+        box-shadow: 2px 8px 15px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.02);
+        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.15), 
+                    box-shadow 0.4s ease, 
+                    z-index 0s;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        z-index: 2;
+        overflow: hidden;
+    }
+
+    /* 便签悬浮上浮与旋转微调 */
+    .note-card:hover {
+        transform: scale(1.05) rotate(0deg) !important;
+        box-shadow: 10px 18px 25px rgba(0, 0, 0, 0.08), 0 8px 12px rgba(0, 0, 0, 0.04);
+        z-index: 10;
+    }
+
+    /* 5种精美的粉彩配色（Light Mode） */
+    .note-color-0 { background-color: #fff9e6; border-left: 5px solid #ffeaa7; } /* 淡黄 */
+    .note-color-1 { background-color: #f5f0f9; border-left: 5px solid #d6bef4; } /* 淡紫 */
+    .note-color-2 { background-color: #edf7fc; border-left: 5px solid #aed6f1; } /* 淡蓝 */
+    .note-color-3 { background-color: #fff0f3; border-left: 5px solid #ffccd5; } /* 淡粉 */
+    .note-color-4 { background-color: #eafaf1; border-left: 5px solid #abebc6; } /* 淡绿 */
+
+    /* Dark Mode 下采用磨砂半透明质感，保留色彩边缘 */
+    [data-theme="dark"] .note-color-0 { background-color: rgba(255, 234, 167, 0.08); border-left: 5px solid rgba(255, 234, 167, 0.6); }
+    [data-theme="dark"] .note-color-1 { background-color: rgba(214, 190, 244, 0.08); border-left: 5px solid rgba(214, 190, 244, 0.6); }
+    [data-theme="dark"] .note-color-2 { background-color: rgba(174, 214, 241, 0.08); border-left: 5px solid rgba(174, 214, 241, 0.6); }
+    [data-theme="dark"] .note-color-3 { background-color: rgba(255, 204, 213, 0.08); border-left: 5px solid rgba(255, 204, 213, 0.6); }
+    [data-theme="dark"] .note-color-4 { background-color: rgba(171, 235, 198, 0.08); border-left: 5px solid rgba(171, 235, 198, 0.6); }
+
+    [data-theme="dark"] .note-card {
+        box-shadow: 2px 8px 20px rgba(0, 0, 0, 0.35);
+        color: var(--text-primary);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+    }
+
+    /* 便签装饰器：图钉 (Pin) */
+    .note-pin {
+        position: absolute;
+        top: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 13px;
+        height: 13px;
+        border-radius: 50%;
+        z-index: 10;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15), 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .note-pin::after {
+        content: '';
+        position: absolute;
+        top: 9px;
+        left: 5px;
+        width: 3px;
+        height: 6px;
+        background: #a6a6a6;
+        transform: skewX(-15deg);
+    }
+
+    /* 4种颜色的图钉 */
+    .pin-color-0 { background: radial-gradient(circle at 4px 4px, #ff85a2, #ff527b); } /* 红 */
+    .pin-color-1 { background: radial-gradient(circle at 4px 4px, #5dade2, #2471a3); } /* 蓝 */
+    .pin-color-2 { background: radial-gradient(circle at 4px 4px, #f4d03f, #b7950b); } /* 黄 */
+    .pin-color-3 { background: radial-gradient(circle at 4px 4px, #58d68d, #1e8449); } /* 绿 */
+
+    /* 便签装饰器：和纸胶带 (Tape) */
+    .note-tape {
+        position: absolute;
+        top: -15px;
+        left: 50%;
+        transform: translateX(-50%) rotate(-3deg);
+        width: 58px;
+        height: 16px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+        z-index: 10;
+        opacity: 0.75;
+    }
+
+    /* 3种样式的胶带 */
+    .tape-style-0 {
+        background-color: rgba(255, 182, 193, 0.5);
+        background-image: repeating-linear-gradient(45deg, transparent, transparent 3px, rgba(255, 255, 255, 0.25) 3px, rgba(255, 255, 255, 0.25) 6px);
+    }
+    .tape-style-1 {
+        background-color: rgba(174, 214, 241, 0.5);
+        background-image: repeating-linear-gradient(-45deg, transparent, transparent 3px, rgba(255, 255, 255, 0.25) 3px, rgba(255, 255, 255, 0.25) 6px);
+    }
+    .tape-style-2 {
+        background-color: rgba(249, 231, 159, 0.55);
+        background-image: radial-gradient(circle, rgba(255, 255, 255, 0.3) 2px, transparent 2px);
+        background-size: 8px 8px;
+    }
+
+    /* 便签文本内容 */
+    .note-title {
+        font-size: 0.95rem;
+        font-weight: 800;
+        color: var(--text-primary);
+        margin: 0 0 0.6rem 0;
+        line-height: 1.4;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        border-bottom: 1px dashed rgba(0, 0, 0, 0.06);
+        padding-bottom: 4px;
+    }
+
+    [data-theme="dark"] .note-title {
+        border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+    }
+
+    .note-body {
+        font-size: 0.84rem;
+        color: var(--text-secondary);
+        line-height: 1.6;
+        margin: 0;
+        flex: 1;
+        overflow: hidden;
+        word-break: break-all;
+        display: -webkit-box;
+        -webkit-line-clamp: 5;
+        -webkit-box-orient: vertical;
+    }
+
+    [data-theme="dark"] .note-body {
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    /* 便签底部信息栏 */
+    .note-footer {
+        margin-top: 0.8rem;
+        font-size: 0.72rem;
+        color: var(--text-secondary);
+        opacity: 0.85;
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        border-top: 1px solid rgba(0, 0, 0, 0.03);
+        padding-top: 5px;
+    }
+
+    [data-theme="dark"] .note-footer {
+        border-top: 1px solid rgba(255, 255, 255, 0.04);
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    .note-meta-line {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .note-author {
+        font-weight: 700;
+        color: var(--text-primary);
+    }
+
+    /* 手绘插画风小图标悬浮 */
+    .note-doodle {
+        position: absolute;
+        bottom: 6px;
+        right: 8px;
+        width: 22px;
+        height: 22px;
+        opacity: 0.18;
+        pointer-events: none;
+        transition: transform 0.3s ease;
+    }
+    
+    .note-card:hover .note-doodle {
+        transform: scale(1.2) rotate(15deg);
+        opacity: 0.35;
+    }
+
+    [data-theme="dark"] .note-doodle {
+        opacity: 0.25;
+        filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.2));
+    }
+
+    /* 向下查看提示条 */
+    .guestbook-divider-btn {
+        display: flex;
+        justify-content: center;
+        margin: 1rem 0 3.5rem 0;
+    }
+
+    .scroll-down-btn {
+        background-color: var(--label-bg);
+        color: var(--accent-color);
+        font-size: 0.85rem;
+        font-weight: 700;
+        padding: 8px 24px;
+        border-radius: var(--radius-pill);
+        border: 1px solid rgba(255, 82, 123, 0.15);
+        box-shadow: 0 4px 10px rgba(255, 82, 123, 0.05);
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        text-decoration: none !important;
+    }
+
+    .scroll-down-btn:hover {
+        transform: translateY(2px);
+        background-color: var(--accent-color);
+        color: #ffffff;
+        box-shadow: 0 4px 15px rgba(255, 82, 123, 0.2);
+    }
+
+    /* 评论框外壳 */
+    .comments-wrapper {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: var(--card-shadow);
+    }
+
+    .comments-title {
+        font-size: 1.3rem;
+        font-weight: 800;
+        color: var(--text-primary);
+        margin-top: 0;
+        margin-bottom: 1.8rem;
+        border-left: 4px solid var(--accent-color);
+        padding-left: 10px;
+    }
+
+    /* 隐藏留言墙下方评论框中的评论列表、排序按钮和 Waline 版权标识，仅保留评论编辑输入区 */
+    #waline-comments .wl-meta,
+    #waline-comments .wl-cards,
+    #waline-comments .wl-list,
+    #waline-comments .wl-num,
+    #waline-comments .wl-count,
+    #waline-comments .wl-list-head,
+    #waline-comments .wl-sort,
+    #waline-comments .wl-power {
+        display: none !important;
+    }
+
+    /* 仅当页面中存在留言墙时，屏蔽外部默认生成的评论区 */
+    body:has(.guestbook-page-container) #waline-comments:not(.guestbook-page-container #waline-comments) {
+        display: none !important;
+    }
+</style>
+
+<div class="guestbook-page-container">
+    <div class="guestbook-header">
+        <h1 class="guestbook-title">留言墙</h1>
+        <p class="guestbook-subtitle">留下你的足迹，每一张便签都是一份温暖</p>
+    </div>
+
+    <!-- 留言白板区域 -->
+    <div class="guestbook-board-wrapper">
+        <div id="guestbookBoard" class="guestbook-board">
+            <div class="guestbook-loading">✨ 正在努力摘取留言便签...</div>
+        </div>
+    </div>
+
+    <!-- 向下查看导航按钮 -->
+    <div class="guestbook-divider-btn">
+        <a href="#waline-title-anchor" class="scroll-down-btn">
+            ↓ 向下查看及写留言
+        </a>
+    </div>
+
+    <!-- 评论输入及列表加载框 -->
+    <div class="comments-wrapper" id="waline-title-anchor">
+        <h2 class="comments-title">✍️ 写留言</h2>
+        <div id="waline-comments">
+            <div class="guestbook-loading" id="wl-loading-status">⚡ 正在唤醒留言系统组件...</div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    //<![CDATA[
+    (function() {
+        const serverURL = "https://pl.430309.xyz";
+        const pageSize = 100; // 最多抓取100张便签，铺满白板
+        const currentPath = location.pathname;
+
+        // SVG 手绘涂鸦图标集合
+        const doodles = [
+            // 花朵
+            `<svg class="note-doodle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 12c.5-2.5 2-4 4-4s3 1.5 3 3.5-2 3.5-4 4-2.5.5-3-3.5zm0 0c-.5-2.5-2-4-4-4s-3 1.5-3 3.5 2 3.5 4 4 2.5.5 3-3.5zm0 0c2.5.5 4 2 4 4s-1.5 3-3.5 3-3.5-2-4-4-.5-2.5 3.5-3zm0 0c-2.5.5-4 2-4 4s1.5 3 3.5 3 3.5-2 4-4 .5-2.5-3.5-3z" stroke="var(--accent-color)"/></svg>`,
+            // 云朵
+            `<svg class="note-doodle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 16a4 4 0 0 1 0-8c.4 0 .7.1 1.1.2A5.5 5.5 0 0 1 17 9.5a3.5 3.5 0 0 1 1 6.8H6z" stroke="#3498db"/></svg>`,
+            // 心形
+            `<svg class="note-doodle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="rgba(255, 82, 123, 0.15)" stroke="var(--accent-color)"/></svg>`,
+            // 星星
+            `<svg class="note-doodle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke="#f1c40f"/></svg>`,
+            // 植物叶子
+            `<svg class="note-doodle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 22c3.5-3.5 7-4.5 11-4.5M12 14c2-2 5-3 8-3M13 17.5c2.5-.5 5-2 6-4M9 19c1-2.5 3-3.5 5-4.5" stroke="#2ecc71"/></svg>`
+        ];
+
+        // 计算相对时间，匹配接口的相对时间显示
+        function getRelativeTime(isoString) {
+            if (!isoString) return "";
+            const d = new Date(isoString);
+            if (isNaN(d.getTime())) return "";
+            
+            const now = new Date();
+            const diffMs = now - d;
+            const diffSec = Math.floor(diffMs / 1000);
+            const diffMin = Math.floor(diffSec / 60);
+            const diffHr = Math.floor(diffMin / 60);
+            const diffDay = Math.floor(diffHr / 24);
+            
+            if (diffSec < 60) return "刚刚";
+            if (diffMin < 60) return `${diffMin} 分钟前`;
+            if (diffHr < 24) return `${diffHr} 小时前`;
+            if (diffDay < 30) return `${diffDay} 天前`;
+            
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const dateVal = String(d.getDate()).padStart(2, '0');
+            return `${y}.${m}.${dateVal}`;
+        }
+
+        // 解析提取留言标题和内容正文
+        function parseCommentContent(htmlStr) {
+            const temp = document.createElement("div");
+            temp.innerHTML = htmlStr;
+            const rawText = temp.innerText.trim();
+
+            let title = "留言";
+            let body = rawText;
+
+            // 1. 尝试以换行分割
+            const lines = rawText.split(/\n+/).map(l => l.trim()).filter(l => l.length > 0);
+            if (lines.length > 0) {
+                // 如果第一行长度适中，作为标题
+                if (lines[0].length <= 15) {
+                    title = lines[0];
+                    body = lines.slice(1).join(" ") || "留下了温暖的足迹。";
+                } else {
+                    title = lines[0].substring(0, 12) + "...";
+                    body = rawText;
+                }
+            } else {
+                // 2. 尝试按首句标点分割
+                const firstSentenceMatch = rawText.match(/^([^，。！？,!?\n]{2,15})[，。！？,!?\n]/);
+                if (firstSentenceMatch) {
+                    title = firstSentenceMatch[1];
+                    body = rawText.substring(firstSentenceMatch[0].length).trim() || rawText;
+                } else {
+                    title = rawText.substring(0, 10) + (rawText.length > 10 ? "..." : "");
+                    body = rawText;
+                }
+            }
+
+            return { title, body };
+        }
+
+        // 渲染留言便签墙
+        function renderNotes(comments) {
+            const board = document.getElementById("guestbookBoard");
+            if (!board) return;
+
+            if (comments.length === 0) {
+                board.innerHTML = `<div class="guestbook-loading">🌸 留言白板还空空的哦，快去写下第一条留言吧！</div>`;
+                return;
+            }
+
+            let notesHTML = "";
+            comments.forEach((cmt, idx) => {
+                // 随机背景配色 (0-4)
+                const colorIdx = idx % 5;
+                // 随机旋转角度 (-5deg 到 5deg)，给便签手账般的有机感
+                const rot = (Math.random() * 8 - 4).toFixed(1);
+                // 随机图钉配色 (0-3) 或 胶带样式 (0-2) 随机组合
+                const usePin = Math.random() > 0.45; // 60% 使用图钉，40% 使用胶带
+                const pinColor = Math.floor(Math.random() * 4);
+                const tapeStyle = Math.floor(Math.random() * 3);
+                // 随机手绘涂鸦图标 (0-4)
+                const doodleHTML = doodles[Math.floor(Math.random() * doodles.length)];
+
+                // 解析内容与时间
+                const timeString = getRelativeTime(cmt.insertedAt);
+                const textObj = parseCommentContent(cmt.comment);
+
+                // 拼装便签装饰物
+                const decoratorHTML = usePin 
+                    ? `<div class="note-pin pin-color-${pinColor}"></div>` 
+                    : `<div class="note-tape tape-style-${tapeStyle}"></div>`;
+
+                notesHTML += `
+                    <div class="note-card note-color-${colorIdx}" style="transform: rotate(${rot}deg);" data-id="${cmt.id}">
+                        ${decoratorHTML}
+                        ${doodleHTML}
+                        <div class="note-top">
+                            <h3 class="note-title">${textObj.title}</h3>
+                            <p class="note-body">${textObj.body}</p>
+                        </div>
+                        <div class="note-footer">
+                            <div class="note-meta-line">
+                                <span>👤</span>
+                                <span class="note-author">${cmt.nick || "匿名的旅行者"}</span>
+                                <span style="margin-left: 6px; opacity: 0.65;">· ${timeString}</span>
+                            </div>
+                            <div class="note-meta-line" style="margin-top: 2px;">
+                                <span>📍</span>
+                                <span>${cmt.addr || "未知地点"}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            board.innerHTML = notesHTML;
+        }
+
+        // 从 Waline 服务接口获取留言评论列表（挂载到全局 window 供评论提交回调调用）
+        window.fetchWalineComments = function() {
+            const apiURL = `${serverURL}/api/comment?path=${encodeURIComponent(currentPath)}&pageSize=${pageSize}`;
+            
+            fetch(apiURL)
+                .then(res => res.json())
+                .then(res => {
+                    let list = [];
+                    if (res && res.data) {
+                        list = Array.isArray(res.data) ? res.data : (Array.isArray(res.data.data) ? res.data.data : []);
+                    }
+                    // 仅提取根级评论（不展示嵌套回复以保持便签清爽）
+                    const rootComments = list.filter(item => !item.pid);
+                    renderNotes(rootComments);
+                })
+                .catch(err => {
+                    console.error("抓取Waline评论失败: ", err);
+                    const board = document.getElementById("guestbookBoard");
+                    if (board) {
+                        board.innerHTML = `<div class="guestbook-loading">❌ 留言墙加载失败，请检查 Waline 服务配置是否唤醒。</div>`;
+                    }
+                });
+        };
+
+        // 初始化抓取
+        if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", window.fetchWalineComments);
+        } else {
+            window.fetchWalineComments();
+        }
+
+        // 监听平滑滚动到评论框
+        const scrollBtn = document.querySelector(".scroll-down-btn");
+        if (scrollBtn) {
+            scrollBtn.addEventListener("click", function(e) {
+                e.preventDefault();
+                const target = document.getElementById("waline-title-anchor");
+                if (target) {
+                    target.scrollIntoView({ behavior: "smooth" });
+                }
+            });
+        }
+
+        // 动态拦截并重写全局 Waline 初始化参数以追加提交回调，实现免刷新重绘便签墙
+        // 双重保险设计：1) JavaScript API 钩子拦截；2) DOM 编辑器提交与清空检测轮询
+        (function() {
+            // 策略 A: JavaScript Proxy 钩子拦截器
+            function wrapInit(waline) {
+                if (!waline || !waline.init || waline.init.isProxied) return;
+                const originalInit = waline.init;
+                waline.init = function(config) {
+                    const originalCallback = config.onCommentSubmitted;
+                    config.onCommentSubmitted = function(comment) {
+                        if (typeof originalCallback === 'function') {
+                            originalCallback(comment);
+                        }
+                        triggerReload();
+                    };
+                    return originalInit(config);
+                };
+                waline.init.isProxied = true;
+            }
+
+            function triggerReload() {
+                setTimeout(function() {
+                    if (typeof window.fetchWalineComments === 'function') {
+                        window.fetchWalineComments();
+                    }
+                }, 1000);
+            }
+
+            // 初始化包装
+            if (window.Waline) {
+                wrapInit(window.Waline);
+            }
+
+            // 拦截 window.Waline 被整体赋值的情况
+            let walineVal = window.Waline || {};
+            wrapInit(walineVal);
+
+            Object.defineProperty(window, 'Waline', {
+                get: function() { return walineVal; },
+                set: function(newVal) {
+                    walineVal = newVal;
+                    wrapInit(walineVal);
+                },
+                configurable: true
+            });
+
+            // 拦截 window.Waline.init 被单独修改/赋值的情况
+            let initVal = walineVal.init;
+            Object.defineProperty(walineVal, 'init', {
+                get: function() { return initVal; },
+                set: function(newInit) {
+                    if (newInit && !newInit.isProxied) {
+                        initVal = function(config) {
+                            const originalCallback = config.onCommentSubmitted;
+                            config.onCommentSubmitted = function(comment) {
+                                if (typeof originalCallback === 'function') {
+                                    originalCallback(comment);
+                                }
+                                triggerReload();
+                            };
+                            return newInit(config);
+                        };
+                        initVal.isProxied = true;
+                    } else {
+                        initVal = newInit;
+                    }
+                },
+                configurable: true
+            });
+
+            // 策略 B: DOM 编辑器提交与清空检测轮询（兜底机制，防止 CDN 版本差异导致钩子失效）
+            document.addEventListener('click', function(e) {
+                const btn = e.target.closest('#waline-comments .wl-btn');
+                if (btn && !btn.classList.contains('wl-header-btn')) {
+                    const textarea = document.querySelector('#waline-comments .wl-editor');
+                    if (textarea) {
+                        const originalLength = textarea.value.trim().length;
+                        if (originalLength > 0) {
+                            let pollCount = 0;
+                            const pollTimer = setInterval(function() {
+                                pollCount++;
+                                // 当编辑器输入框被自动清空，证明提交成功！
+                                if (textarea.value.trim() === "") {
+                                    clearInterval(pollTimer);
+                                    triggerReload();
+                                }
+                                if (pollCount > 30) { // 最多检测15秒
+                                    clearInterval(pollTimer);
+                                }
+                            }, 500);
+                        }
+                    }
+                }
+            });
+        })();
+    })();
+    //]]>
+</script>
+<!-- Guestbook Page Container 结束 -->

@@ -1,0 +1,596 @@
+<style>
+    /* 友链专区样式命名空间，防止样式冲突 */
+    .friends-page-container {
+        font-family: inherit;
+        color: var(--text-primary);
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 1rem 0;
+    }
+
+    .friends-header {
+        text-align: center;
+        margin-bottom: 3.5rem;
+        margin-top: 1.5rem;
+    }
+
+    .friends-title {
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: var(--text-primary);
+        margin-bottom: 1rem;
+        letter-spacing: 2px;
+        position: relative;
+        display: inline-block;
+    }
+
+    .friends-title::after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 45px;
+        height: 4px;
+        background: var(--accent-color);
+        border-radius: var(--radius-pill);
+    }
+
+    .friends-subtitle {
+        font-size: 0.95rem;
+        color: var(--text-secondary);
+        font-style: italic;
+        margin: 0;
+    }
+
+    .friends-section-title {
+        font-size: 1.4rem;
+        font-weight: 700;
+        margin: 2.5rem 0 1.2rem;
+        padding-left: 10px;
+        border-left: 4px solid var(--accent-color);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .friends-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.2rem;
+        margin-bottom: 2rem;
+    }
+
+    .friend-card {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        border-radius: var(--radius-card);
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        box-shadow: var(--card-shadow);
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+            border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+            box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        text-decoration: none !important;
+        cursor: pointer;
+    }
+
+    .friend-card:hover {
+        transform: translateY(-5px);
+        border-color: var(--accent-color);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05), 0 2px 8px rgba(255, 82, 123, 0.08);
+    }
+
+    [data-theme="dark"] .friend-card:hover {
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.35), 0 2px 8px rgba(255, 110, 146, 0.15);
+    }
+
+    .friend-avatar-wrap {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 2px solid var(--border-color);
+        flex-shrink: 0;
+        transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+            border-color 0.4s ease;
+    }
+
+    .friend-card:hover .friend-avatar-wrap {
+        transform: rotate(360deg);
+        border-color: var(--accent-color);
+    }
+
+    .friend-avatar {
+        display: block !important;
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border-radius: 0 !important;
+        border: none !important;
+    }
+
+    .friend-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .friend-name {
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 4px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        transition: color 0.3s ease;
+    }
+
+    .friend-card:hover .friend-name {
+        color: var(--accent-color);
+    }
+
+    .friend-desc {
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        line-height: 1.4;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        height: 2.8em;
+        /* 保持两行高度对齐 */
+    }
+
+    /* 申请友链板块 */
+    .friend-apply-card {
+        margin-top: 3.5rem;
+        padding: 1.8rem;
+        border-radius: var(--radius-card);
+        background: var(--bg-secondary);
+        border: 1px dashed var(--border-color);
+        box-shadow: var(--card-shadow);
+        transition: border-color 0.3s ease;
+    }
+
+    .friend-apply-card:hover {
+        border-color: var(--accent-color);
+    }
+
+    .friend-apply-title {
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin-bottom: 0.8rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .friend-apply-rules {
+        font-size: 0.88rem;
+        color: var(--text-secondary);
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+    }
+
+    .friend-apply-rules ul {
+        padding-left: 1.2rem;
+        margin-top: 0.5rem;
+    }
+
+    .friend-apply-rules li {
+        margin-bottom: 0.3rem;
+    }
+
+
+
+    /* 本站信息复制组件 */
+    .friend-example-section {
+        margin-top: 1.5rem;
+    }
+
+    .friend-copy-list {
+        background: var(--bg-primary);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-item);
+        overflow: hidden;
+    }
+
+    .friend-copy-item {
+        display: flex;
+        align-items: center;
+        padding: 0.9rem 1.2rem;
+        border-bottom: 1px solid var(--border-color);
+        cursor: pointer;
+        position: relative;
+        transition: all 0.2s ease;
+    }
+
+    .friend-copy-item:last-child {
+        border-bottom: none;
+    }
+
+    .friend-copy-key {
+        width: 80px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: var(--text-secondary);
+        user-select: none;
+        flex-shrink: 0;
+    }
+
+    .friend-copy-val {
+        flex: 1;
+        min-width: 0;
+        font-family: monospace, sans-serif;
+        font-size: 0.88rem;
+        color: var(--text-primary);
+        padding-right: 2.5rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .friend-copy-action {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--accent-color);
+        opacity: 0;
+        transform: translateX(5px);
+        transition: all 0.2s ease;
+        user-select: none;
+        flex-shrink: 0;
+    }
+
+    .friend-copy-item:hover {
+        background: rgba(255, 255, 255, 0.02);
+    }
+    
+    :root:not(.dark) .friend-copy-item:hover,
+    body:not(.dark) .friend-copy-item:hover {
+        background: rgba(0, 0, 0, 0.015);
+    }
+
+    .friend-copy-item:hover .friend-copy-action {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    /* Tooltip 样式 */
+    .friend-copy-tooltip {
+        position: absolute;
+        right: 1.2rem;
+        background: var(--accent-color);
+        color: #ffffff;
+        font-size: 0.72rem;
+        font-weight: 600;
+        padding: 3px 8px;
+        border-radius: var(--radius-item);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(5px);
+        transition: all 0.15s ease;
+        z-index: 10;
+    }
+
+    .friend-copy-row.copied .friend-copy-tooltip {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+    
+    .friend-copy-row.copied .friend-copy-action {
+        opacity: 0;
+    }
+
+    .friend-copy-all-btn {
+        background: var(--bg-primary);
+        border: 1px solid var(--border-color);
+        color: var(--text-secondary);
+        padding: 5px 12px;
+        border-radius: var(--radius-item);
+        font-size: 0.75rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        user-select: none;
+    }
+
+    .friend-copy-all-btn:hover {
+        border-color: var(--accent-color);
+        color: var(--accent-color);
+        background: var(--bg-secondary);
+    }
+
+    .friend-copy-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 1.5rem 0 0.8rem 0;
+    }
+
+    /* 移动端响应式自适应 */
+    @media (max-width: 768px) {
+        .friends-page-container {
+            padding: 1rem 1rem;
+        }
+
+        .friends-header {
+            margin-bottom: 2rem;
+            margin-top: 1rem;
+        }
+
+        .friends-title {
+            font-size: 1.8rem;
+        }
+
+        .friends-grid {
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 1rem;
+        }
+
+        .friend-apply-card {
+            padding: 1.2rem;
+            margin-top: 2.5rem;
+        }
+
+        .friend-copy-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .friend-copy-item {
+            padding: 0.8rem 1rem;
+        }
+
+        .friend-copy-val {
+            font-size: 0.8rem;
+            padding-right: 1.5rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .friends-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="friends-page-container">
+    <div class="friends-header">
+        <h1 class="friends-title">友情链接</h1>
+        <p class="friends-subtitle">“星河璀璨，因有你的印记而更加闪耀。”</p>
+    </div>
+
+
+    <div class="friends-grid">
+        <!-- 友链卡片 1 -->
+        <a href="https://www.hsuyeung.com" target="_blank" class="friend-card">
+            <div class="friend-avatar-wrap">
+                <img src="https://www.hsuyeung.com/img/avatar.jpg" alt="Hsu Yeung 的博客" class="friend-avatar"
+                    fetchpriority="high">
+            </div>
+            <div class="friend-info">
+                <div class="friend-name">Hsu Yeung 的博客</div>
+                <div class="friend-desc" title="前天看到了小兔，昨天是小鹿，今天是你。">前天看到了小兔，昨天是小鹿，今天是你。</div>
+            </div>
+        </a>
+
+        <!-- 友链卡片 2 -->
+        <a href="https://blog.aulypc0x0.online/" target="_blank" class="friend-card">
+            <div class="friend-avatar-wrap">
+                <img src="https://blog.aulypc0x0.online/favicon/favicon_amiya.webp" alt="AULyPcのBlog"
+                    class="friend-avatar">
+            </div>
+            <div class="friend-info">
+                <div class="friend-name">AULyPcのBlog</div>
+                <div class="friend-desc" title="今日も生きててえらい ☁">今日も生きててえらい ☁</div>
+            </div>
+        </a>
+
+        <!-- 友链卡片 3 -->
+        <a href="https://vnyzm.top" target="_blank" class="friend-card">
+            <div class="friend-avatar-wrap">
+                <img src="https://vnyzm.top/img/profile.jpg" alt="VnYzm的博客" class="friend-avatar">
+            </div>
+            <div class="friend-info">
+                <div class="friend-name">VnYzm的博客</div>
+                <div class="friend-desc" title="分享技术心得和摸鱼感想">分享技术心得和摸鱼感想</div>
+            </div>
+        </a>
+
+        <!-- 友链卡片 4 -->
+        <a href="https://kawayww.com" target="_blank" class="friend-card">
+            <div class="friend-avatar-wrap">
+                <img src="https://kawayww.com/images/blog/avatar.avif" alt="柳上川" class="friend-avatar" loading="lazy">
+            </div>
+            <div class="friend-info">
+                <div class="friend-name">柳上川</div>
+                <div class="friend-desc" title="宁可清贫自乐, 不作浊富多忧">宁可清贫自乐, 不作浊富多忧</div>
+            </div>
+        </a>
+
+        <!-- 友链卡片 5 -->
+        <a href="https://gongz.moe" target="_blank" class="friend-card">
+            <div class="friend-avatar-wrap">
+                <img src="https://gongz.moe/favicon.ico" alt="记忆之海" class="friend-avatar" loading="lazy">
+            </div>
+            <div class="friend-info">
+                <div class="friend-name">记忆之海</div>
+                <div class="friend-desc" title="二次元是第一技术力！">二次元是第一技术力！</div>
+            </div>
+        </a>
+
+        <!-- 友链卡片 6 -->
+        <a href="https://www.xiaojiu.kn-hsp.top/" target="_blank" class="friend-card">
+            <div class="friend-avatar-wrap">
+                <img src="https://xiaojiu.kn-hsp.top/_astro/avatar.DdV28LnJ_2o69mU.webp" alt="Noiris"
+                    class="friend-avatar" loading="lazy">
+            </div>
+            <div class="friend-info">
+                <div class="friend-name">Noiris</div>
+                <div class="friend-desc" title="若是许下了愿望，就去实现叭~">若是许下了愿望，就去实现叭~</div>
+            </div>
+        </a>
+
+        <!-- 友链卡片 7 -->
+        <a href="https://www.matsusatou.top/" target="_blank" class="friend-card">
+            <div class="friend-avatar-wrap">
+                <img src="https://cdn.jsdelivr.net/gh/SokiSama/picked@main/avatar.jpg" alt="SatouのBlog"
+                    class="friend-avatar" loading="lazy">
+            </div>
+            <div class="friend-info">
+                <div class="friend-name">SatouのBlog</div>
+                <div class="friend-desc" title="彼女の爱は、甘くて痛い">彼女の爱は、甘くて痛い</div>
+            </div>
+        </a>
+
+        <!-- 友链卡片 8 -->
+        <a href="https://blog.atao.cyou/" target="_blank" class="friend-card">
+            <div class="friend-avatar-wrap">
+                <img src="https://cdn.atao.cyou/Web/Avatar.png" alt="ATao-Blog" class="friend-avatar" loading="lazy">
+            </div>
+            <div class="friend-info">
+                <div class="friend-name">ATao-Blog</div>
+                <div class="friend-desc" title="做自己喜欢的事">做自己喜欢的事</div>
+            </div>
+        </a>
+    </div>
+
+    <!-- 申请友链说明 -->
+    <div class="friend-apply-card">
+        <div class="friend-apply-title">
+            <span>📝</span> 交换友链
+        </div>
+        <div class="friend-apply-rules">
+            欢迎与本站交换友情链接！在申请前，请注意以下几点：
+            <ul>
+                <li>请确保您的网站能够正常访问，且内容不违反相关法律法规；</li>
+                <li>本站优先添加高质量的原创技术、生活记录、二次元及ACG相关的博客；</li>
+                <li>请在您的网站上<b>先添加本站的友链</b>，然后在下方评论区留言，本站会在看到留言后第一时间互加！</li>
+            </ul>
+        </div>
+
+        <!-- 本站信息开始 -->
+        <div class="friend-example-section">
+            <div class="friend-copy-header">
+                <div style="font-size: 0.9rem; font-weight: 700;">本站信息 (点击每行复制)</div>
+                <div style="display: flex; gap: 8px;">
+                    <button class="friend-copy-all-btn" id="friendCopyAllBtn">一键复制全部</button>
+                    <button class="friend-copy-all-btn" id="friendCopyJsonBtn">复制 JSON</button>
+                </div>
+            </div>
+            <div class="friend-copy-list">
+                <!-- Row 1: 名称 -->
+                <div class="friend-copy-item friend-copy-row" data-copy="AmiyaAA's Blog">
+                    <span class="friend-copy-key">名称</span>
+                    <span class="friend-copy-val">AmiyaAA's Blog</span>
+                    <span class="friend-copy-action">复制</span>
+                    <div class="friend-copy-tooltip">已复制</div>
+                </div>
+                <!-- Row 2: 描述 -->
+                <div class="friend-copy-item friend-copy-row" data-copy="永远喜欢『真理』">
+                    <span class="friend-copy-key">描述</span>
+                    <span class="friend-copy-val">永远喜欢『真理』</span>
+                    <span class="friend-copy-action">复制</span>
+                    <div class="friend-copy-tooltip">已复制</div>
+                </div>
+                <!-- Row 3: 链接 -->
+                <div class="friend-copy-item friend-copy-row" data-copy="https://blog.430309.xyz/">
+                    <span class="friend-copy-key">链接</span>
+                    <span class="friend-copy-val">https://blog.430309.xyz/</span>
+                    <span class="friend-copy-action">复制</span>
+                    <div class="friend-copy-tooltip">已复制</div>
+                </div>
+                <!-- Row 4: 头像 -->
+                <div class="friend-copy-item friend-copy-row" data-copy="https://cdn.430309.xyz/avatar.jpg">
+                    <span class="friend-copy-key">头像</span>
+                    <span class="friend-copy-val">https://cdn.430309.xyz/avatar.jpg</span>
+                    <span class="friend-copy-action">复制</span>
+                    <div class="friend-copy-tooltip">已复制</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function () {
+        // 绑定一键复制全部的逻辑
+        const copyAllBtn = document.getElementById('friendCopyAllBtn');
+        if (copyAllBtn) {
+            copyAllBtn.addEventListener('click', function () {
+                const rawText = ("名称\uFF1AAmiyaAA's Blog\n" +
+                    "描述\uFF1A永远喜欢\u300E真理\u300F\n" +
+                    "链接\uFF1Ahttps://blog.430309.xyz/\n" +
+                    "头像\uFF1Ahttps://cdn.430309.xyz/avatar.jpg").trim();
+
+                navigator.clipboard.writeText(rawText).then(function () {
+                    copyAllBtn.textContent = '已复制全部\uFF01';
+                    copyAllBtn.style.borderColor = 'var(--accent-color)';
+                    copyAllBtn.style.color = 'var(--accent-color)';
+
+                    setTimeout(function () {
+                        copyAllBtn.textContent = '一键复制全部';
+                        copyAllBtn.style.borderColor = '';
+                        copyAllBtn.style.color = '';
+                    }, 2000);
+                }).catch(function (err) {
+                    console.error('复制失败:', err);
+                    alert('复制失败，请手动选择复制。');
+                });
+            });
+        }
+
+        // 绑定一键复制 JSON 的逻辑
+        const copyJsonBtn = document.getElementById('friendCopyJsonBtn');
+        if (copyJsonBtn) {
+            copyJsonBtn.addEventListener('click', function () {
+                const jsonObj = {
+                    name: "AmiyaAA's Blog",
+                    description: "永远喜欢\u300E真理\u300F",
+                    url: "https://blog.430309.xyz/",
+                    avatar: "https://cdn.430309.xyz/avatar.jpg"
+                };
+                const jsonText = JSON.stringify(jsonObj, null, 2);
+
+                navigator.clipboard.writeText(jsonText).then(function () {
+                    copyJsonBtn.textContent = '已复制 JSON\uFF01';
+                    copyJsonBtn.style.borderColor = 'var(--accent-color)';
+                    copyJsonBtn.style.color = 'var(--accent-color)';
+
+                    setTimeout(function () {
+                        copyJsonBtn.textContent = '复制 JSON';
+                        copyJsonBtn.style.borderColor = '';
+                        copyJsonBtn.style.color = '';
+                    }, 2000);
+                }).catch(function (err) {
+                    console.error('复制失败:', err);
+                    alert('复制失败，请手动选择复制。');
+                });
+            });
+        }
+
+        // 绑定点击每行复制的逻辑
+        const copyRows = document.querySelectorAll('.friend-copy-row');
+        copyRows.forEach(function (row) {
+            row.addEventListener('click', function () {
+                const textToCopy = this.getAttribute('data-copy').trim();
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    this.classList.add('copied');
+                    setTimeout(() => {
+                        this.classList.remove('copied');
+                    }, 1500);
+                }).catch(err => {
+                    console.error('复制失败:', err);
+                });
+            });
+        });
+    })();
+</script>

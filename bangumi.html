@@ -1,0 +1,691 @@
+<!-- Bangumi 容器开始 -->
+<div class="bgm-container">
+    <!-- 页面标题与副标题 -->
+    <div class="bgm-title-area">
+        <h2 class="bgm-main-title">番组计划</h2>
+        <p class="bgm-subtitle">记录我的二次元之旅</p>
+    </div>
+
+    <!-- 主分类导航 (Level 1) -->
+    <div class="bgm-category-tabs">
+        <button class="bgm-cat-btn active" data-subject-type="2">🎬 动画</button>
+        <button class="bgm-cat-btn" data-subject-type="1">📚 书籍</button>
+        <button class="bgm-cat-btn" data-subject-type="3">🎵 音乐</button>
+        <button class="bgm-cat-btn" data-subject-type="4">🎮 游戏</button>
+    </div>
+
+    <!-- 状态选项卡导航 (Level 2) -->
+    <div class="bgm-tabs">
+        <button class="bgm-tab-btn active" data-type="ALL">
+            <span class="bgm-verb">全部</span> (<span class="bgm-count-num" id="count-all">-</span>)
+        </button>
+        <button class="bgm-tab-btn" data-type="2">
+            <span class="bgm-verb">在看</span> (<span class="bgm-count-num" id="count-doing">-</span>)
+        </button>
+        <button class="bgm-tab-btn" data-type="3">
+            <span class="bgm-verb">看过</span> (<span class="bgm-count-num" id="count-collect">-</span>)
+        </button>
+        <button class="bgm-tab-btn" data-type="1">
+            <span class="bgm-verb">想看</span> (<span class="bgm-count-num" id="count-wish">-</span>)
+        </button>
+    </div>
+
+    <!-- 数据展示网格 -->
+    <div id="bgm-grid" class="bgm-grid">
+        <!-- 骨架屏加载动画 -->
+        <div class="bgm-skeleton-card"></div>
+        <div class="bgm-skeleton-card"></div>
+        <div class="bgm-skeleton-card"></div>
+        <div class="bgm-skeleton-card"></div>
+        <div class="bgm-skeleton-card"></div>
+        <div class="bgm-skeleton-card"></div>
+    </div>
+
+    <!-- 底部操作区 -->
+    <div class="bgm-actions">
+        <button id="bgm-btn-more" class="bgm-btn-more" style="display: none;">加载更多 ➔</button>
+    </div>
+</div>
+
+<!-- 自定义样式 -->
+<style>
+    .bgm-container {
+        margin: 1rem 0;
+        font-family: inherit;
+    }
+
+    /* 隐藏 Blogger 默认渲染的页面标题、发布日期、字数统计与过期警告，避免与自定义标题重复 */
+    .post-title,
+    .post-meta,
+    .post-outdate-warning {
+        display: none !important;
+    }
+
+    /* 标题与副标题样式 */
+    .bgm-title-area {
+        text-align: center;
+        margin-bottom: 2.2rem;
+    }
+
+    .bgm-main-title {
+        font-size: 1.8rem;
+        font-weight: 800;
+        margin: 0 0 0.4rem 0;
+        color: var(--text-primary);
+        letter-spacing: 1px;
+    }
+
+    .bgm-subtitle {
+        font-size: 0.95rem;
+        color: var(--text-secondary);
+        margin: 0;
+        letter-spacing: 0.5px;
+    }
+
+    /* 一级分类导航样式 */
+    .bgm-category-tabs {
+        display: flex;
+        gap: 0.6rem;
+        margin-bottom: 1.5rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .bgm-cat-btn {
+        background: transparent;
+        border: 2px dashed var(--border-color);
+        color: var(--text-secondary);
+        padding: 0.6rem 1.4rem;
+        border-radius: var(--radius-card);
+        cursor: pointer;
+        font-size: 0.95rem;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        font-weight: 600;
+        outline: none;
+    }
+
+    .bgm-cat-btn:hover {
+        border-color: var(--accent-color);
+        color: var(--accent-color);
+        background: rgba(255, 82, 123, 0.04);
+    }
+
+    .bgm-cat-btn.active {
+        background: var(--bg-primary);
+        border: 2px solid var(--accent-color);
+        color: var(--accent-color);
+        box-shadow: var(--card-shadow);
+        transform: translateY(-2px);
+    }
+
+    /* 二级状态选项卡样式 */
+    .bgm-tabs {
+        display: flex;
+        gap: 0.8rem;
+        margin-bottom: 2rem;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .bgm-tab-btn {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        color: var(--text-secondary);
+        padding: 0.5rem 1.2rem;
+        border-radius: var(--radius-pill);
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        font-weight: 500;
+        outline: none;
+    }
+
+    .bgm-tab-btn:hover {
+        background: var(--toggle-bg);
+        color: var(--text-primary);
+    }
+
+    .bgm-tab-btn.active {
+        background: var(--accent-color);
+        border-color: var(--accent-color);
+        color: #ffffff;
+        box-shadow: 0 4px 10px rgba(255, 82, 123, 0.35);
+    }
+
+    /* 数据展示网格 */
+    .bgm-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    /* 海报卡片 */
+    .bgm-card {
+        position: relative;
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-card);
+        overflow: hidden;
+        aspect-ratio: 2 / 3;
+        box-shadow: var(--card-shadow);
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        display: flex;
+        flex-direction: column;
+        opacity: 0;
+        transform: translateY(12px);
+        animation: bgmFadeIn 0.5s ease forwards;
+        text-decoration: none !important;
+        color: inherit !important;
+    }
+
+    @keyframes bgmFadeIn {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .bgm-card:hover {
+        transform: translateY(-6px);
+        border-color: var(--accent-color);
+        box-shadow: 0 16px 32px rgba(0, 0, 0, 0.15);
+    }
+
+    /* 强效防冲突海报样式，确保无缝铺满 */
+    .bgm-card-cover {
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+        transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        z-index: 1 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        max-width: none !important;
+        max-height: none !important;
+    }
+
+    .bgm-card:hover .bgm-card-cover {
+        transform: scale(1.04) !important;
+    }
+
+    .bgm-card-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 50%;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.4) 60%, rgba(0, 0, 0, 0) 100%);
+        z-index: 2;
+        pointer-events: none;
+    }
+
+    .bgm-status-badge {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        color: #ffffff;
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: var(--radius-pill);
+        z-index: 3;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .bgm-status-badge.status-wish {
+        background: var(--accent-color);
+    }
+
+    .bgm-status-badge.status-doing {
+        background: #ff9800;
+    }
+
+    .bgm-status-badge.status-collect {
+        background: #4caf50;
+    }
+
+    .bgm-score-badge {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: rgba(0, 0, 0, 0.55);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        color: #ffffff;
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 3px 8px;
+        border-radius: var(--radius-pill);
+        display: flex;
+        align-items: center;
+        gap: 3px;
+        z-index: 3;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .bgm-score-star {
+        color: #ffd700;
+        font-size: 0.75rem;
+    }
+
+    .bgm-card-info {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 1.2rem;
+        z-index: 3;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
+    }
+
+    .bgm-card-title {
+        font-size: 1.02rem;
+        font-weight: 700;
+        color: #ffffff;
+        margin: 0;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .bgm-card-year {
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.7);
+        margin: 0;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        font-weight: 500;
+    }
+
+    .bgm-card-tags {
+        display: flex;
+        gap: 4px;
+        flex-wrap: wrap;
+        margin-top: 0.3rem;
+    }
+
+    .bgm-card-tag {
+        font-size: 0.65rem;
+        background: rgba(255, 255, 255, 0.15);
+        color: #ffffff;
+        padding: 2px 6px;
+        border-radius: 4px;
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        font-weight: 500;
+    }
+
+    /* 加载更多按钮 */
+    .bgm-actions {
+        display: flex;
+        justify-content: center;
+        margin-top: 1.5rem;
+    }
+
+    .bgm-btn-more {
+        background: var(--bg-primary);
+        border: 1px solid var(--border-color);
+        color: var(--text-primary);
+        padding: 0.6rem 2rem;
+        border-radius: var(--radius-pill);
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        font-weight: 500;
+        box-shadow: var(--card-shadow);
+    }
+
+    .bgm-btn-more:hover {
+        background: var(--accent-color);
+        color: #ffffff;
+        border-color: var(--accent-color);
+        box-shadow: 0 6px 14px rgba(255, 82, 123, 0.35);
+    }
+
+    /* 状态提示 */
+    .bgm-loading-text,
+    .bgm-error-text {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 4rem 0;
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+    }
+
+    .bgm-error-btn {
+        margin-top: 1rem;
+        background: var(--accent-color);
+        color: #ffffff;
+        border: none;
+        padding: 0.4rem 1.2rem;
+        border-radius: var(--radius-btn);
+        cursor: pointer;
+    }
+
+    /* 骨架屏载入效果 */
+    .bgm-skeleton-card {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-card);
+        aspect-ratio: 2/3;
+        animation: bgmPulse 1.5s infinite ease-in-out;
+    }
+
+    @keyframes bgmPulse {
+        0% {
+            opacity: 0.5;
+        }
+
+        50% {
+            opacity: 0.8;
+        }
+
+        100% {
+            opacity: 0.5;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .bgm-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.8rem;
+        }
+    }
+</style>
+
+<!-- 核心脚本 -->
+<script>
+    //<![CDATA[
+    (function () {
+        const USERNAME = 'amiyamoe';
+        const LIMIT = 18;
+        const API_HOST = 'https://bgmapi.anibt.net';
+        const IMG_HOST = 'https://bgmimg.anibt.net';
+
+        let currentSubjectType = '2'; // 默认动画 (1: 书籍, 2: 动画, 3: 音乐, 4: 游戏)
+        let currentType = 'ALL';      // 默认全部 (ALL, 2: doing, 3: collect, 1: wish)
+        let currentOffset = 0;
+        let totalItems = 0;
+
+        const gridNode = document.getElementById('bgm-grid');
+        const loadMoreBtn = document.getElementById('bgm-btn-more');
+
+        const countNodes = {
+            'ALL': document.getElementById('count-all'),
+            '1': document.getElementById('count-wish'),
+            '2': document.getElementById('count-doing'),
+            '3': document.getElementById('count-collect')
+        };
+
+        // 状态动词映射表
+        const VERBS = {
+            '2': { 'ALL': '全部', '2': '在看', '3': '看过', '1': '想看' }, // 动画
+            '1': { 'ALL': '全部', '2': '在读', '3': '读过', '1': '想读' }, // 书籍
+            '3': { 'ALL': '全部', '2': '在听', '3': '听过', '1': '想听' }, // 音乐
+            '4': { 'ALL': '全部', '2': '在玩', '3': '玩过', '1': '想玩' }  // 游戏
+        };
+
+        // 绑定一级类别 (Category) 点击事件
+        document.querySelectorAll('.bgm-cat-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                if (this.classList.contains('active')) return;
+
+                document.querySelectorAll('.bgm-cat-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+
+                currentSubjectType = this.getAttribute('data-subject-type');
+
+                // 刷新二级选项卡的动词文本
+                updateTabLabels(currentSubjectType);
+
+                // 触发重新加载
+                resetAndFetch();
+            });
+        });
+
+        // 绑定二级状态 (Type) 点击事件
+        document.querySelectorAll('.bgm-tab-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                if (this.classList.contains('active')) return;
+
+                document.querySelectorAll('.bgm-tab-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+
+                currentType = this.getAttribute('data-type');
+
+                // 触发重新加载
+                resetAndFetch();
+            });
+        });
+
+        // 重置并触发数据获取
+        function resetAndFetch() {
+            currentOffset = 0;
+            gridNode.innerHTML = '';
+            loadMoreBtn.style.display = 'none';
+
+            showSkeleton();
+            fetchData(currentSubjectType, currentType, currentOffset);
+            updateCountsForCategory(currentSubjectType);
+        }
+
+        // 绑定加载更多事件
+        loadMoreBtn.addEventListener('click', function () {
+            this.disabled = true;
+            this.textContent = '加载中捏...';
+            fetchData(currentSubjectType, currentType, currentOffset);
+        });
+
+        // 更新二级选项卡上的动作动词
+        function updateTabLabels(subjectType) {
+            document.querySelectorAll('.bgm-tab-btn').forEach(btn => {
+                const type = btn.getAttribute('data-type');
+                const verbSpan = btn.querySelector('.bgm-verb');
+                if (verbSpan) {
+                    verbSpan.textContent = VERBS[subjectType][type];
+                }
+            });
+        }
+
+        // 显示骨架屏
+        function showSkeleton() {
+            gridNode.innerHTML = Array(6).fill('<div class="bgm-skeleton-card"></div>').join('');
+        }
+
+        // 获取特定分类下所有状态的数量统计
+        async function updateCountsForCategory(subjectType) {
+            // 1. 获取“全部”大类的统计数
+            try {
+                const res = await fetch(`${API_HOST}/v0/users/${USERNAME}/collections?subject_type=${subjectType}&limit=1`);
+                if (res.ok) {
+                    const json = await res.json();
+                    if (countNodes['ALL']) {
+                        countNodes['ALL'].textContent = json.total || 0;
+                    }
+                }
+            } catch (e) { console.error(e); }
+
+            // 2. 获取各个细分状态的统计数
+            const statuses = ['1', '2', '3'];
+            statuses.forEach(async (type) => {
+                try {
+                    const res = await fetch(`${API_HOST}/v0/users/${USERNAME}/collections?subject_type=${subjectType}&type=${type}&limit=1`);
+                    if (res.ok) {
+                        const json = await res.json();
+                        if (countNodes[type]) {
+                            countNodes[type].textContent = json.total || 0;
+                        }
+                    }
+                } catch (e) {
+                    console.error(e);
+                }
+            });
+        }
+
+        // 抓取并渲染数据
+        async function fetchData(subjectType, type, offset) {
+            const typeParam = type === 'ALL' ? '' : `&type=${type}`;
+            const url = `${API_HOST}/v0/users/${USERNAME}/collections?subject_type=${subjectType}${typeParam}&limit=${LIMIT}&offset=${offset}`;
+
+            try {
+                const res = await fetch(url);
+                if (!res.ok) throw new Error('API Error');
+
+                const json = await res.json();
+                totalItems = json.total || 0;
+                const items = json.data || [];
+
+                // 清理骨架屏
+                if (offset === 0) {
+                    gridNode.innerHTML = '';
+                }
+
+                if (items.length === 0 && offset === 0) {
+                    gridNode.innerHTML = '<div class="bgm-loading-text">这里空空如也，什么都没有标记过捏~</div>';
+                    return;
+                }
+
+                // 循环添加卡片
+                items.forEach((item, index) => {
+                    const cardHtml = createCardHtml(item, index + offset, subjectType);
+                    gridNode.insertAdjacentHTML('beforeend', cardHtml);
+                });
+
+                // 翻页偏移计算
+                currentOffset += items.length;
+
+                // 加载更多按钮显隐状态
+                if (currentOffset < totalItems) {
+                    loadMoreBtn.style.display = 'inline-block';
+                    loadMoreBtn.disabled = false;
+                    loadMoreBtn.textContent = '加载更多 \u2794';
+                } else {
+                    loadMoreBtn.style.display = 'none';
+                }
+
+            } catch (err) {
+                console.error(err);
+                if (offset === 0) {
+                    gridNode.innerHTML = `
+                    <div class="bgm-error-text">
+                        <p>无法连接到 Bangumi 服务器捏，可能被网络阻断了~</p>
+                        <button class="bgm-error-btn" onclick="window.location.reload()">重新尝试</button>
+                    </div>
+                `;
+                } else {
+                    loadMoreBtn.disabled = false;
+                    loadMoreBtn.textContent = '加载失败，点我重试 \u2794';
+                }
+            }
+        }
+
+        // 构建条目卡片 HTML
+        function createCardHtml(item, globalIndex, subjectType) {
+            const subject = item.subject;
+            let coverUrl = subject.images?.medium || 'https://lain.bgm.tv/pic/cover/m/default.jpg';
+            coverUrl = coverUrl.replace(/https?:\/\/lain\.bgm\.tv/, IMG_HOST);
+            const title = subject.name_cn || subject.name;
+
+            // 提取年份与进度
+            const year = subject.date ? subject.date.split('-')[0] : '未知';
+            let metaText = year;
+
+            // 如果是在看状态，则追加具体集数进度
+            if (item.type === 2) {
+                if (subjectType === '2') {
+                    const epsText = subject.eps ? `${subject.eps} 话` : '未知';
+                    metaText += ` · 已看 ${item.ep_status || 0}/${epsText}`;
+                } else if (subjectType === '1') {
+                    const volsText = subject.volumes ? `${subject.volumes} 卷` : '';
+                    const epsText = subject.eps ? `${subject.eps} 话` : '';
+                    if (volsText && epsText) {
+                        metaText += ` · 已读 ${item.vol_status || 0}卷/${item.ep_status || 0}话`;
+                    } else if (volsText) {
+                        metaText += ` · 已读 ${item.vol_status || 0}/${volsText}`;
+                    } else if (epsText) {
+                        metaText += ` · 已读 ${item.ep_status || 0}/${epsText}`;
+                    }
+                } else if (subjectType === '4') {
+                    metaText += ` · 在玩`;
+                }
+            }
+
+            // 动画淡入时延
+            const delay = (globalIndex % 6) * 0.08;
+            const animationStyle = `animation-delay: ${delay}s;`;
+
+            // 评分徽章
+            let scoreHtml = '';
+            if (item.rate > 0) {
+                scoreHtml = `<span class="bgm-score-badge"><span class="bgm-score-star">★</span> ${item.rate}</span>`;
+            } else if (subject.score > 0) {
+                scoreHtml = `<span class="bgm-score-badge"><span class="bgm-score-star">★</span> ${subject.score.toFixed(1)}</span>`;
+            }
+
+            // 状态标识
+            const itemType = item.type; // 1: wish, 2: doing, 3: collect
+            const statusVerb = VERBS[subjectType][itemType] || '想看';
+            const statusClass = itemType === 1 ? 'status-wish' : (itemType === 2 ? 'status-doing' : 'status-collect');
+            const statusBadgeHtml = `<span class="bgm-status-badge ${statusClass}">${statusVerb}</span>`;
+
+            // 提取社区公共标签 (subject.tags) 代替私人空标签，保证必定展示
+            const maxTags = 3;
+            const tagsList = (subject.tags || []).map(t => t.name);
+            let tagsHtml = '';
+            if (tagsList.length > 0) {
+                const visibleTags = tagsList.slice(0, maxTags);
+                tagsHtml = visibleTags.map(tag => `<span class="bgm-card-tag">${tag}</span>`).join('');
+                if (tagsList.length > maxTags) {
+                    tagsHtml += `<span class="bgm-card-tag bgm-tag-more">+${tagsList.length - maxTags}</span>`;
+                }
+            }
+
+            const subjectUrl = `https://bgm.tv/subject/${item.subject_id}`;
+            return `
+            <a class="bgm-card" href="${subjectUrl}" target="_blank" rel="noopener noreferrer" style="${animationStyle}">
+                <!-- 海报图片 -->
+                <img class="bgm-card-cover" src="${coverUrl}" loading="lazy" alt="${title}"/>
+                
+                <!-- 底部阴影蒙层 -->
+                <div class="bgm-card-overlay"></div>
+                
+                <!-- 悬浮徽章 -->
+                ${statusBadgeHtml}
+                ${scoreHtml}
+                
+                <!-- 底部元数据 -->
+                <div class="bgm-card-info">
+                    <h4 class="bgm-card-title" title="${title}">${title}</h4>
+                    <p class="bgm-card-year">${metaText}</p>
+                    <div class="bgm-card-tags">
+                        ${tagsHtml}
+                    </div>
+                </div>
+            </a>
+        `;
+        }
+
+        // 网页加载入口
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                updateCountsForCategory(currentSubjectType);
+                fetchData(currentSubjectType, currentType, currentOffset);
+            });
+        } else {
+            updateCountsForCategory(currentSubjectType);
+            fetchData(currentSubjectType, currentType, currentOffset);
+        }
+    })();
+    //]]>
+</script>
+<!-- Bangumi 容器结束 -->

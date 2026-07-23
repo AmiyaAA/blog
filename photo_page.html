@@ -1,0 +1,480 @@
+<!-- Photo Wall Container 开始 -->
+<style>
+    /* 照片墙专属命名空间，防止样式冲突 */
+    .photo-page-container {
+        font-family: inherit;
+        color: var(--text-primary);
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 1rem 0;
+    }
+
+    .photo-header {
+        text-align: center;
+        margin-bottom: 3.5rem;
+        margin-top: 1.5rem;
+    }
+
+    .photo-title {
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: var(--text-primary);
+        margin-bottom: 1rem;
+        letter-spacing: 2px;
+        position: relative;
+        display: inline-block;
+    }
+
+    .photo-title::after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 45px;
+        height: 4px;
+        background: var(--accent-color);
+        border-radius: var(--radius-pill);
+    }
+
+    .photo-subtitle {
+        font-size: 0.95rem;
+        color: var(--text-secondary);
+        font-style: italic;
+        margin: 0;
+    }
+
+
+
+    /* CSS 原生瀑布流布局 */
+    .gallery-grid {
+        column-count: 3;
+        column-gap: 1.2rem;
+        width: 100%;
+    }
+
+    /* 相册卡片样式 */
+    .photo-card {
+        position: relative;
+        border-radius: var(--radius-card);
+        overflow: hidden;
+        background: transparent;
+        border: 1px solid var(--border-color);
+        box-shadow: var(--card-shadow);
+        margin-bottom: 1.2rem;
+        break-inside: avoid;
+        transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.45s ease;
+        cursor: pointer;
+    }
+
+    .photo-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
+    }
+
+    [data-theme="dark"] .photo-card:hover {
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.38);
+    }
+
+    .photo-img-wrap {
+        position: relative;
+        width: 100%;
+        margin: 0 !important;
+        padding: 0 !important;
+        border-radius: inherit !important;
+        overflow: hidden;
+        /* 渐变骨架屏脉冲效果 */
+        background: linear-gradient(90deg, var(--bg-secondary) 25%, var(--border-color) 50%, var(--bg-secondary) 75%);
+        background-size: 200% 100%;
+        animation: shimmer 1.6s infinite;
+    }
+
+    @keyframes shimmer {
+        0% {
+            background-position: 200% 0;
+        }
+
+        100% {
+            background-position: -200% 0;
+        }
+    }
+
+    .photo-card .photo-img {
+        display: block !important;
+        width: 100% !important;
+        height: auto !important;
+        object-fit: cover !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        border-radius: 0 !important;
+        transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .photo-card:hover .photo-img {
+        transform: scale(1.04) !important;
+    }
+
+    /* 遮罩悬浮层 (在相册墙上完全隐藏，仅保留在HTML中供Lightbox读取) */
+    .photo-info-overlay {
+        display: none !important;
+    }
+
+    /* Lightbox 弹出层大图模式 */
+    .photo-lightbox {
+        position: fixed;
+        inset: 0;
+        background-color: rgba(0, 0, 0, 0.94);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        z-index: 999999;
+        display: none;
+        opacity: 0;
+        align-items: center;
+        justify-content: center;
+        transition: opacity 0.35s ease;
+    }
+
+    .photo-lightbox.open {
+        display: flex;
+        opacity: 1;
+    }
+
+    .lightbox-close {
+        position: fixed;
+        top: 24px;
+        right: 24px;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.15);
+        color: #ffffff;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+        line-height: 1;
+        cursor: pointer;
+        z-index: 1000002;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        outline: none;
+    }
+
+    .lightbox-close:hover {
+        background-color: rgba(255, 255, 255, 0.3);
+        transform: scale(1.08);
+        color: #ffffff;
+    }
+
+    .lightbox-nav {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255, 255, 255, 0.08);
+        border: none;
+        color: #ffffff;
+        font-size: 2.2rem;
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        cursor: pointer;
+        z-index: 1010;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.2s, opacity 0.2s;
+        opacity: 0.6;
+        outline: none;
+        user-select: none;
+    }
+
+    .lightbox-nav:hover {
+        background: rgba(255, 255, 255, 0.22);
+        opacity: 1;
+    }
+
+    .lightbox-prev {
+        left: 25px;
+    }
+
+    .lightbox-next {
+        right: 25px;
+    }
+
+    .lightbox-content {
+        max-width: 82%;
+        max-height: 82%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+        transform: scale(0.96);
+        transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .photo-lightbox.open .lightbox-content {
+        transform: scale(1);
+    }
+
+    .lightbox-content img {
+        max-width: 100%;
+        max-height: 68vh;
+        object-fit: contain;
+        border-radius: 8px;
+        box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .lightbox-info {
+        margin-top: 1.2rem;
+        color: #ffffff;
+        text-align: center;
+        max-width: 580px;
+    }
+
+    .lightbox-meta {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        font-size: 0.8rem;
+        opacity: 0.7;
+        margin-bottom: 8px;
+    }
+
+    .lightbox-title {
+        font-size: 1.25rem;
+        font-weight: 800;
+        margin: 0 0 8px 0;
+        color: #ffffff;
+    }
+
+    .lightbox-desc {
+        font-size: 0.88rem;
+        margin: 0;
+        opacity: 0.85;
+        line-height: 1.6;
+    }
+
+    .year-section-title {
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: var(--text-primary);
+        margin-top: 1.5rem;
+        margin-bottom: 2rem;
+        padding-bottom: 0.6rem;
+        border-bottom: 1.5px solid var(--border-color);
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+    }
+
+    .year-num {
+        font-size: 1.8rem;
+        color: var(--text-primary);
+    }
+
+
+
+    /* 移动端响应式断点适配 */
+    @media (max-width: 992px) {
+        .gallery-grid {
+            column-count: 2;
+            column-gap: 1rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .year-section-title {
+            margin-bottom: 1.2rem;
+        }
+
+        .lightbox-nav {
+            width: 38px;
+            height: 38px;
+            font-size: 1.5rem;
+        }
+
+        .lightbox-prev {
+            left: 10px;
+        }
+
+        .lightbox-next {
+            right: 10px;
+        }
+
+        .lightbox-content {
+            max-width: 95%;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .gallery-grid {
+            column-count: 1;
+            column-gap: 0;
+        }
+
+        .photo-card {
+            margin-bottom: 1rem;
+        }
+    }
+</style>
+
+<div class="photo-page-container">
+    <div class="photo-header">
+        <h1 class="photo-title">时光相册</h1>
+        <p class="photo-subtitle">“镜头是时光的切片，记录那些闪光的瞬间。”</p>
+    </div>
+
+    <h2 class="year-section-title">
+        <span class="year-num">2023</span>
+    </h2>
+
+    <div class="gallery-grid">
+        <!-- 卡片 1 -->
+        <div class="photo-card">
+            <div class="photo-img-wrap">
+                <img class="photo-img"
+                    src="https://img.430309.xyz/file/AgACAgUAAyEGAATZTTrbAAMZamIv1CnHWgGHQVMrphXp_j47mKMAAtwOaxsCJRlXc_5qUqCa7noBAAMCAAN5AAM9BA.jpg"
+                    loading="lazy" alt="童年回忆">
+            </div>
+            <div class="photo-info-overlay">
+                <div class="photo-info-meta">
+                    <span class="photo-info-date">2023-11-20</span>
+                    <span class="photo-info-location">📍 时光角落</span>
+                </div>
+                <h3 class="photo-info-title">童年回忆</h3>
+                <p class="photo-info-desc">那些关于童年的旧物件与老故事，封存在斑驳的时光里，偶尔翻起，依然温暖如初。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 弹窗遮罩层 -->
+    <div id="photoLightbox" class="photo-lightbox" aria-hidden="true">
+        <button class="lightbox-close" aria-label="关闭">&times;</button>
+        <button class="lightbox-nav lightbox-prev" aria-label="上一张">&#8249;</button>
+        <button class="lightbox-nav lightbox-next" aria-label="下一张">&#8250;</button>
+        <div class="lightbox-content">
+            <img id="lightboxImage" src="" alt="大图加载中...">
+            <div class="lightbox-info">
+                <div class="lightbox-meta">
+                    <span id="lightboxDate"></span>
+                    <span id="lightboxLocation"></span>
+                </div>
+                <h3 id="lightboxTitle" class="lightbox-title"></h3>
+                <p id="lightboxDesc" class="lightbox-desc"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    //<![CDATA[
+    // 1. 照片懒加载与骨架屏消除
+    document.querySelectorAll('.photo-img').forEach(img => {
+        if (img.complete) {
+            img.parentElement.style.background = 'none';
+        } else {
+            img.addEventListener('load', function () {
+                img.parentElement.style.background = 'none';
+            });
+        }
+    });
+
+
+
+    // 3. 高画质大图 Lightbox 灯箱预览系统
+    (function () {
+        const lightbox = document.getElementById('photoLightbox');
+        if (lightbox) {
+            document.body.appendChild(lightbox);
+        }
+        const lightboxImg = document.getElementById('lightboxImage');
+        const lightboxTitle = document.getElementById('lightboxTitle');
+        const lightboxDesc = document.getElementById('lightboxDesc');
+        const lightboxDate = document.getElementById('lightboxDate');
+        const lightboxLoc = document.getElementById('lightboxLocation');
+        const closeBtn = lightbox.querySelector('.lightbox-close');
+        const prevBtn = lightbox.querySelector('.lightbox-prev');
+        const nextBtn = lightbox.querySelector('.lightbox-next');
+
+        let currentIndex = -1;
+
+        // 捕获所有照片数据
+        const photoCards = document.querySelectorAll('.photo-card');
+        const photosData = Array.from(photoCards).map(card => {
+            const img = card.querySelector('.photo-img');
+            return {
+                src: img.src,
+                title: card.querySelector('.photo-info-title').textContent,
+                desc: card.querySelector('.photo-info-desc').textContent,
+                date: card.querySelector('.photo-info-date').textContent,
+                location: card.querySelector('.photo-info-location').textContent
+            };
+        });
+
+        function openLightbox(index) {
+            if (index < 0 || index >= photosData.length) return;
+            currentIndex = index;
+            const data = photosData[index];
+
+            lightboxImg.src = data.src;
+            lightboxTitle.textContent = data.title;
+            lightboxDesc.textContent = data.desc;
+            lightboxDate.textContent = data.date;
+            lightboxLoc.textContent = data.location;
+
+            lightbox.classList.add('open');
+            lightbox.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden'; // 防止底页滚动
+        }
+
+        function closeLightbox() {
+            lightbox.classList.remove('open');
+            lightbox.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+            lightboxImg.src = '';
+        }
+
+        function showNext() {
+            let nextIdx = (currentIndex + 1) % photosData.length;
+            openLightbox(nextIdx);
+        }
+
+        function showPrev() {
+            let prevIdx = (currentIndex - 1 + photosData.length) % photosData.length;
+            openLightbox(prevIdx);
+        }
+
+        // 点击卡片激活
+        photoCards.forEach((card, idx) => {
+            card.addEventListener('click', function () {
+                openLightbox(idx);
+            });
+        });
+
+        // 按钮监听
+        closeBtn.addEventListener('click', closeLightbox);
+        nextBtn.addEventListener('click', showNext);
+        prevBtn.addEventListener('click', showPrev);
+
+        // 遮罩空白点击关闭
+        lightbox.addEventListener('click', function (e) {
+            if (e.target === lightbox || e.target.classList.contains('lightbox-content')) {
+                closeLightbox();
+            }
+        });
+
+        // 键盘左右键与退出键监听
+        document.addEventListener('keydown', function (e) {
+            if (!lightbox.classList.contains('open')) return;
+            if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'ArrowRight') showNext();
+            if (e.key === 'ArrowLeft') showPrev();
+        });
+    })();
+    //]]>
+</script>
+<!-- Photo Wall Container 结束 -->
