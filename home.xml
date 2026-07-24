@@ -1041,28 +1041,27 @@
     .mobile-nav-floating-btn {
         display: none;
         position: fixed;
-        right: 0;
-        top: 60%;
-        transform: translateY(-50%);
+        left: 0;
+        bottom: 220px;
         width: 44px;
         height: 48px;
-        border-radius: 24px 0 0 24px;
+        border-radius: 0 24px 24px 0;
         background-color: var(--label-bg);
         color: var(--accent-color);
         border: 1px solid var(--border-color);
-        border-right: none;
+        border-left: none;
         outline: none;
         cursor: pointer;
         align-items: center;
         justify-content: center;
-        padding-right: 4px;
-        box-shadow: -2px 4px 12px rgba(0, 0, 0, 0.08);
+        padding-left: 4px;
+        box-shadow: 2px 4px 12px rgba(0, 0, 0, 0.08);
         z-index: 9999;
         transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
     }
     
     .mobile-nav-floating-btn:active {
-        transform: translateY(-50%) scale(0.92);
+        transform: scale(0.92);
     }
     
     .mobile-nav-floating-btn svg {
@@ -1351,10 +1350,143 @@
         color: var(--accent-color);
         transform: translateX(4px);
     }
+    
+    /* ==========================================================================
+       Pinned Post (置顶文章) Component Styles
+       ========================================================================== */
+    .post-card {
+        position: relative;
+    }
+    
+    /* Apply flex ordering ONLY in multiple item list views (homepage, archive, search) */
+    .view-is-multiple .widget.Blog, .view-is-multiple #Blog1 {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .view-is-multiple .post-card {
+        order: 2; /* Normal posts */
+    }
+    
+    .view-is-multiple .blog-pager-container, .view-is-multiple #blog-pager {
+        order: 3; /* Pager always at bottom */
+    }
+    
+    .view-is-multiple .post-card.post-pinned {
+        order: 1; /* Pinned posts at top */
+        border: 1px solid rgba(255, 82, 123, 0.35) !important;
+        background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%) !important;
+    }
+    
+    [data-theme="dark"] .view-is-multiple .post-card.post-pinned {
+        border-color: rgba(255, 110, 146, 0.4) !important;
+        background: linear-gradient(180deg, var(--bg-primary) 0%, rgba(255, 110, 146, 0.02) 100%) !important;
+    }
+    
+    .post-pinned-badge {
+        position: absolute;
+        top: 0;
+        right: 24px;
+        background-color: var(--accent-color);
+        color: #ffffff;
+        padding: 5px 12px;
+        border-radius: 0 0 8px 8px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        box-shadow: 0 2px 8px rgba(255, 82, 123, 0.25);
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        user-select: none;
+    }
+    
+    [data-theme="dark"] .post-pinned-badge {
+        box-shadow: 0 2px 8px rgba(255, 110, 146, 0.25);
+    }
+    
+    /* ==========================================================================
+       Flip Calendar style Odometer widget (浏览量小组件) CSS Styles
+       ========================================================================== */
+    .stats-card {
+        padding: 1.6rem 1.2rem;
+        text-align: center;
+    }
+    
+    .stats-card h2 {
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin: 0 0 1rem 0;
+        text-align: left;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 8px;
+    }
+    
+    .stats-odometer-wrapper {
+        display: flex;
+        justify-content: center;
+        margin: 1.4rem 0 0.8rem;
+    }
+    
+    .odometer-container {
+        display: flex;
+        align-items: center;
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        padding: 8px 10px;
+        border-radius: var(--radius-card);
+        box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.03);
+    }
+    
+    .odometer-digit-box {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        height: 44px;
+        background: linear-gradient(180deg, #32323d 0%, #22222a 48%, #0f0f13 52%, #1a1a22 100%);
+        color: #ffffff;
+        font-family: 'Outfit', 'Segoe UI', monospace;
+        font-size: 1.7rem;
+        font-weight: 800;
+        border-radius: 6px;
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 
+                    inset 0 1px 1px rgba(255, 255, 255, 0.15), 
+                    inset 0 -1px 1px rgba(0, 0, 0, 0.4);
+        margin: 0 2.5px;
+        overflow: hidden;
+        user-select: none;
+    }
+
+    /* Horizontal Split Line */
+    .odometer-digit-box::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 50%;
+        height: 1px;
+        background: rgba(0, 0, 0, 0.6);
+        box-shadow: 0 0.5px 0.5px rgba(255, 255, 255, 0.15);
+        z-index: 5;
+    }
+    
+    .stats-meta-info {
+        font-size: 0.78rem;
+        color: var(--text-secondary);
+        font-weight: 600;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        margin-top: 0.4rem;
+    }
     ]]></b:skin>
 &lt;!--</head>--&gt;&lt;/head&gt;
 
 <body>
+    <b:class cond='data:view.isMultipleItems' name='view-is-multiple'/>
     <!-- 网页首屏全装载遮罩进度条 -->
     <div class='page-loader' id='page-loader'>
         <div class='loader-content'>
@@ -1393,7 +1525,7 @@
                         <a class='menu-link' href='https://blog.430309.xyz/p/chatter.html'>留言板</a>
                     </li>
                     <li class='menu-item'>
-                        <a class='menu-link' href='https://blog.430309.xyz/p/bangumi-bgm.html'>番组计划</a>
+                        <a class='menu-link' href='https://blog.430309.xyz/p/bangumi.html'>番组计划</a>
                     </li>
                     <li class='menu-item'>
                         <a class='menu-link' href='https://blog.430309.xyz/p/about-me.html'>关于我</a>
@@ -1496,6 +1628,10 @@
                         <b:if cond='data:posts and data:posts.notEmpty'>
                             <b:loop index='postIndex' values='data:posts' var='post'>
                                 <article class='post-card'>
+                                    <b:class cond='data:view.isMultipleItems and data:post.labels any (l => l.name == "置顶")' name='post-pinned'/>
+                                    <b:if cond='data:view.isMultipleItems and data:post.labels any (l => l.name == "置顶")'>
+                                        <div class='post-pinned-badge'>📌 置顶</div>
+                                    </b:if>
                                     <b:if cond='!data:view.isSingleItem'>
                                         <!-- 列表视图&#65306;带右侧预览图的弹性布局 -->
                                         <div class='post-card-body'>
@@ -1519,7 +1655,9 @@
                                                         <div class='post-labels'>
                                                             <span>🏷&#65039;</span>
                                                             <b:loop values='data:post.labels' var='label'>
-                                                                <a class='label-item' expr:href='data:label.url'><data:label.name/></a>
+                                                                <b:if cond='data:label.name != "置顶"'>
+                                                                    <a class='label-item' expr:href='data:label.url'><data:label.name/></a>
+                                                                </b:if>
                                                             </b:loop>
                                                         </div>
                                                     </b:if>
@@ -1573,7 +1711,9 @@
                                                     <div class='post-labels'>
                                                         <span>🏷&#65039;</span>
                                                         <b:loop values='data:post.labels' var='label'>
-                                                            <a class='label-item' expr:href='data:label.url'><data:label.name/></a>
+                                                            <b:if cond='data:label.name != "置顶"'>
+                                                                <a class='label-item' expr:href='data:label.url'><data:label.name/></a>
+                                                            </b:if>
                                                         </b:loop>
                                                     </div>
                                                 </b:if>
@@ -1976,6 +2116,8 @@
               </b:widget>
             </b:section>
 
+
+
             <b:section id='sidebar-labels-section' showaddelement='no'>
               <b:widget id='Label1' locked='false' title='文章分类' type='Label' version='2' visible='true'>
                 <b:widget-settings>
@@ -1990,24 +2132,28 @@
                     <h2>🏷&#65039; 标签分类</h2>
                     <div class='sidebar-labels'>
                       <b:loop values='data:labels' var='label'>
-                        <a class='sidebar-label-item' expr:href='data:label.url'>
-                          <data:label.name/> (<data:label.count/>)
-                        </a>
+                        <b:if cond='data:label.name != "置顶"'>
+                          <a class='sidebar-label-item' expr:href='data:label.url'>
+                            <data:label.name/> (<data:label.count/>)
+                          </a>
+                        </b:if>
                       </b:loop>
                     </div>
                   </div>
                 </b:includable>
                 <b:includable id='cloud'>
   <b:loop values='data:labels' var='label'>
-    <span class='label-size'>
-      <b:class expr:name='&quot;label-size-&quot; + data:label.cssSize'/>
-      <a class='label-name' expr:href='data:label.url'>
-        <data:label.name/>
-        <b:if cond='data:this.showFreqNumbers'>
-          <span class='label-count'><data:label.count/></span>
-        </b:if>
-      </a>
-    </span>
+    <b:if cond='data:label.name != "置顶"'>
+      <span class='label-size'>
+        <b:class expr:name='&quot;label-size-&quot; + data:label.cssSize'/>
+        <a class='label-name' expr:href='data:label.url'>
+          <data:label.name/>
+          <b:if cond='data:this.showFreqNumbers'>
+            <span class='label-count'><data:label.count/></span>
+          </b:if>
+        </a>
+      </span>
+    </b:if>
   </b:loop>
 </b:includable>
                 <b:includable id='content'>
@@ -2020,14 +2166,16 @@
                 <b:includable id='list'>
   <ul>
     <b:loop values='data:labels' var='label'>
-      <li>
-        <a class='label-name' expr:href='data:label.url'>
-          <data:label.name/>
-          <b:if cond='data:this.showFreqNumbers'>
-            <span class='label-count'><data:label.count/></span>
-          </b:if>
-        </a>
-      </li>
+      <b:if cond='data:label.name != "置顶"'>
+        <li>
+          <a class='label-name' expr:href='data:label.url'>
+            <data:label.name/>
+            <b:if cond='data:this.showFreqNumbers'>
+              <span class='label-count'><data:label.count/></span>
+            </b:if>
+          </a>
+        </li>
+      </b:if>
     </b:loop>
   </ul>
 </b:includable>
@@ -2113,6 +2261,28 @@
 </b:includable>
               </b:widget>
             </b:section>
+
+            <b:section id='sidebar-stats-section' showaddelement='no'>
+              <b:widget id='HTML101' locked='false' title='访问统计' type='HTML' version='2' visible='true'>
+                <b:includable id='main'>
+                  <div class='sidebar-widget stats-card'>
+                    <h2>📈 访问统计</h2>
+                    <div class='stats-odometer-wrapper'>
+                      <div class='odometer-container' id='umami-odometer'>
+                        <!-- JS will inject odometer digits dynamically -->
+                        <span class='odometer-digit-box'>0</span>
+                        <span class='odometer-digit-box'>0</span>
+                        <span class='odometer-digit-box'>0</span>
+                        <span class='odometer-digit-box'>0</span>
+                        <span class='odometer-digit-box'>0</span>
+                        <span class='odometer-digit-box'>0</span>
+                      </div>
+                    </div>
+                    <div class='stats-meta-info'>总浏览量 (Pageviews)</div>
+                  </div>
+                </b:includable>
+              </b:widget>
+            </b:section>
         </aside>
     </div>
 
@@ -2156,7 +2326,7 @@
             <a href='https://blog.430309.xyz/p/chatter.html' class='radial-item' style='--tx: 108.3px; --ty: 62.5px; --delay: 2;'>
                 <span>留言板</span>
             </a>
-            <a href='https://blog.430309.xyz/p/bangumi-bgm.html' class='radial-item' style='--tx: 0px; --ty: 125px; --delay: 3;'>
+            <a href='https://blog.430309.xyz/p/bangumi.html' class='radial-item' style='--tx: 0px; --ty: 125px; --delay: 3;'>
                 <span>番组计划</span>
             </a>
             <a href='https://blog.430309.xyz/p/about-me.html' class='radial-item' style='--tx: -108.3px; --ty: 62.5px; --delay: 4;'>
@@ -2253,6 +2423,80 @@ const toggleBtn=document.getElementById("themeToggle"),root=document.documentEle
             document.addEventListener("DOMContentLoaded", initDownloadButtons);
         } else {
             initDownloadButtons();
+        }
+    })();
+
+    /* Fetch and update website stats from Umami */
+    (function() {
+        const SHARE_TOKEN = '9NtZpstIwopuZYEo'; 
+        const START_TIME = 1546300800000; // Jan 1, 2019
+        
+        function updateOdometer(value) {
+            const container = document.getElementById('umami-odometer');
+            if (!container) return;
+            
+            const strVal = String(value).padStart(6, '0');
+            container.innerHTML = '';
+            for (let i = 0; i < strVal.length; i++) {
+                const digitBox = document.createElement('span');
+                digitBox.className = 'odometer-digit-box';
+                digitBox.textContent = strVal[i];
+                container.appendChild(digitBox);
+            }
+        }
+        
+        function fetchStats() {
+            if (!SHARE_TOKEN || SHARE_TOKEN === 'YOUR_UMAMI_SHARE_TOKEN') {
+                updateOdometer(0);
+                return;
+            }
+            
+            // 1. Fetch public share website info to get regional JWT token
+            const shareApiUrl = 'https://cloud.umami.is/analytics/eu/api/share/' + SHARE_TOKEN;
+            
+            fetch(shareApiUrl)
+            .then(function(res) {
+                if (!res.ok) throw new Error('HTTP error ' + res.status);
+                return res.json();
+            })
+            .then(function(shareData) {
+                const token = shareData.token;
+                const websiteId = shareData.websiteId;
+                const endTime = Date.now();
+                
+                // 2. Fetch stats using the JWT token on the correct regional endpoint
+                const statsUrl = 'https://cloud.umami.is/analytics/eu/api/websites/' + websiteId + '/stats?startAt=' + START_TIME + '&endAt=' + endTime;
+                
+                return fetch(statsUrl, {
+                    headers: {
+                        'x-umami-share-token': token,
+                        'x-umami-share-context': 'share'
+                    }
+                });
+            })
+            .then(function(res) {
+                if (!res.ok) throw new Error('HTTP error ' + res.status);
+                return res.json();
+            })
+            .then(function(data) {
+                if (data && typeof data.pageviews !== 'undefined') {
+                    // Handle both direct integer (v3) or object with value
+                    const count = (typeof data.pageviews === 'object' && data.pageviews !== null) ? data.pageviews.value : data.pageviews;
+                    updateOdometer(count);
+                } else {
+                    throw new Error('Unexpected data format');
+                }
+            })
+            .catch(function(err) {
+                console.error('Failed to fetch stats from Umami:', err);
+                updateOdometer('ERR');
+            });
+        }
+        
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', fetchStats);
+        } else {
+            fetchStats();
         }
     })();
 //]]>
