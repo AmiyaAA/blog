@@ -2522,7 +2522,7 @@ const toggleBtn=document.getElementById("themeToggle"),root=document.documentEle
             })
             .catch(function(err) {
                 console.error('Failed to fetch stats from Umami:', err);
-                updateOdometer('ERR');
+                updateOdometer('ERROR');
             });
         }
         
